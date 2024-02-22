@@ -1,0 +1,37 @@
+ФАЙЛ requirements.txt ---------------------------------------------------
+
+streamlit               # требуется библиотека последней доступной версии
+streamlit==1.31.1       # требуется библиотека конкретной версии 1.31.1.
+streamlit>=1.31.1       # требуется библиотека версии 1.31.1 и выше
+streamlit>=1.28,<1.31.1 # подойдет любая версия между 1.28.0 и 1.31.1
+streamlit!=1.2          # подойдет любая версия, кроме 1.2
+
+# Команды будут иметь одинаковое действие. (Предполагается что в requirements.txt содержатся данные сведения)
+pip install -r requirements.txt
+pip install pytest flake8 black isort
+
+# Выведет в консоль все зависимости
+pip freeze
+
+# Можно сразу перенаправить в файл
+pip freeze > requirements.txt
+------------------------------------------------------------------------
+Синхронизация  Git с GitHub
+1. Включить Контроль Версий Git
+2. Создать на GitHub репозиторий. Обязательно указать файл .gitignore для python
+3. ПКМ на любом открытом файле проекта:
+ Git/Manage Remotes -> добавить ссылку на гитхаб (скопировать ее с гитхаба)
+
+You can override any checks that Git does by using "force push". Use this command in the terminal:
+/ Вы можете переопределить любые проверки, которые выполняет Git,
+используя "принудительный толчок". Используйте эту команду в терминале: /
+
+git push -f origin master
+
+помогло при Отклоненных Push-ах
+Выскакивала ошибка:
+failed to push some refs to 'https://github.com/.......git'
+hint: Updates were rejected because the remote contains work that you do
+To https://github.com/........git
+hint: not have locally. This is usually caused by another repository pushing
+------------------------------------------------------------------------
