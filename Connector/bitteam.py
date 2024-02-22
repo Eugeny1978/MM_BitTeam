@@ -93,6 +93,13 @@ class BitTeam(): # Request
         symbol = self.format_symbol(symbol)
         return self.__request(path=f'/cmc/orderbook/{symbol}')
 
+    def fetch_common_trades(self, symbol):
+        """
+        Недавно (скорее всего за 24 часа) завершенные сделки для данного Ticker-a
+        """
+        symbol = self.format_symbol(symbol)
+        return self.__request(path=f'/cmc/trades/{symbol}')
+
     def fetch_ticker(self, symbol='del_usdt'):
         """
         Информация по Торговой Паре за 24 часа.
