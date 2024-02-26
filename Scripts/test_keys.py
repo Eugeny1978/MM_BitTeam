@@ -3,7 +3,7 @@ from DataBase.path_to_base import TEST_DB
 import json
 
 div_line = '-'*120
-SYMBOL = 'ETH/USDT'
+SYMBOL = 'DUSD/USDT'
 
 def jprint(data):
     print(json.dumps(data), div_line, sep='\n')

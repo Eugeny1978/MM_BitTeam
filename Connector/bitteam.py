@@ -34,7 +34,8 @@ class BitTeam(): # Request
         if not mode:
             self.base_url = 'https://bit.team/trade/api'
         else:
-            self.base_url = 'https://dkr3.bit.team/trade/api'
+            # self.base_url = 'https://dkr3.bit.team/trade/api'
+            self.base_url = 'https://dkr.bit.team/trade/api'
 
     @staticmethod
     def format_symbol(symbol: str):
