@@ -157,7 +157,7 @@ class Bot:
 
     def get_my_orders(self) -> dict:
         try:
-            my_orders: dict = self.exchange.fetch_orders(self.symbol)['result']
+            my_orders: dict = self.exchange.fetch_orders(self.symbol, limit=10000)['result']
         except:
             my_orders = dict(count=0)
             print('Нет Подключения к базе')
@@ -194,12 +194,23 @@ class Bot:
                 print(f"Не удалось Создать Ордер: {price = }, {self.amounts = }")
 
     def delete_all_orders(self):
+        """
+        Функция для отмены ВСЕХ ордеров на своем Интервале.
+        """
 
+        orders = self.get_my_orders()
+        # Фильтрую
+        # {key: val for key, val in d.items() if key in ('a', 'c', 'e')}
+        # {key: val for key, val in d.items() if val > 3}
+        # {key: val for key, val in d.items() if key in ('a', 'c', 'e') and val > 1}
+        sells = {key: value for key, value in orders.items() if key == 'side' and value == 'sell'}
+        buys = {key: value for key, value in orders.items() if key == 'side' and value == 'buy'}
         match self.side_orders:
             case 'sell':
                 pass
             case 'buy':
                 pass
+        return sells, buys
 
 
 
@@ -220,8 +231,8 @@ if __name__ == '__main__':
     ZERO_PRICE = 1
     MIN_SPRED = 1
     MAX_SPRED = 2
-    NUM_ORDERS = 10
-    SIDE_ORDERS = 'buy' # 'sell' 'buy'
+    NUM_ORDERS = 5
+    SIDE_ORDERS = 'sell' # 'sell' 'buy'
     ACCOUNT = 'TEST_Luchnik'
     DB = TEST_DB
     BOT_NAME = '1_procent'
@@ -246,3 +257,5 @@ if __name__ == '__main__':
 
     bot.set_orders()
 
+    sells, buys = bot.delete_all_orders()
+    mprint(sells, buys)

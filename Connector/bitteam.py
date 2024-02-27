@@ -186,7 +186,7 @@ class BitTeam(): # Request
     def __get_pairId_database(self, symbol):
         with sq.connect(self.database) as connect:
             curs = connect.cursor()
-            curs.execute(f"SELECT id FROM Symbols WHERE name LIKE '{symbol}'")
+            curs.execute(f"SELECT id FROM Symbols WHERE name IS '{symbol}'")
             return str(curs.fetchone()[0])
 
     def create_order(self, symbol: str, type: OrderType, side: OrderSide, amount: float, price: float=0):

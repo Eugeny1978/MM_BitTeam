@@ -33,15 +33,13 @@ def calc_remaining(executed: float, amount: float) -> float:
     return amount - executed
 
 def is_test_trade_mode(mode: str) -> bool:
-    is_test_mode = False
-    if mode == 'Test': is_test_mode = True
-    return is_test_mode
+    return True if mode == 'Test' else False
 
 
 class Accounts:
 
     def __init__(self, database):
-        self.__database = database
+        self.database = database
         self.data = self.get_accounts()
         self.acc_names = self.data.keys()
         self.trade_account = ''
@@ -54,7 +52,7 @@ class Accounts:
 
     def get_accounts(self) -> dict:
         try:
-            with sq.connect(self.__database) as connect:
+            with sq.connect(self.database) as connect:
                 # connect.row_factory = sq.Row
                 curs = connect.cursor()
                 curs.execute(f"SELECT name, apiKey, secret, mode FROM Accounts")
@@ -93,6 +91,7 @@ class Accounts:
             try:
                 self.exchange = BitTeam(self.trade_keys)
                 self.exchange.set_test_mode(self.test_mode)
+                self.exchange.info_tickers()
             except Exception as error:
                 print('Биржа НЕдоступна')
                 raise (error)
