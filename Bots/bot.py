@@ -1,39 +1,66 @@
 from Connector.bitteam import BitTeam
 import pandas as pd
 import sqlite3 as sq
+from random import uniform
+from typing import Literal      # Создание Классов Перечислений
+
+SideType = Literal['buy', 'sell']
+# DBType = Literal['TEST_DB', 'DATABASE']
 
 def is_test_trade_mode(mode: str) -> bool:
-    is_test_mode = False
-    if mode == 'Test': is_test_mode = True
-    return is_test_mode
-
-def format_UPP_symbol(symbol: str):
-    """
-    Привожу Родной Формат к 'BASECOIN/QUOTECOIN'
-    """
-    return symbol.upper().replace('_', '/')
-
+    return True if mode == 'Test' else False
 
 class Bot:
 
     def __init__(self, symbol, volume, zero_price, min_spred, max_spred, num_orders, side_orders, account, database, bot_name):
-        self.symbol = symbol
-        self.volume = volume
-        self.zero_price = zero_price
-        self.min_spred = min_spred if side_orders == 'sell' else -min_spred
-        self.max_spred = max_spred if side_orders == 'sell' else -max_spred
-        self.num_orders = int(num_orders)
-        self.side_orders = side_orders
-        self.account = account
-        self.database = database
-        self.apikeys, self.test_mode = self.get_data_from_bd()
-        self.exchange, self.steps = self.connect_exchange()
+        """
+        symbol: "baseCOIN/quoteCOIN" Торгуемая Пара
+        volume: Общий объем Средств (в базовой Валюте ?)
+        zero_price: Начальная Цена от которой отсчитываются Уровни Диапазона
+        min_spred: Мин. Спред Между Начальной Ценой и Ордерами
+        max_spred: Макс. Спред между Начальной Ценой и Ордерами. Последний Ордер выставляется на цене -1 межордерный Интервал
+        num_orders: Полное Кол-во Ордеров на Интервале. Если в стакане есть Цены лучше, то часть Ордеров не выставляется
+        side_orders: Сторона Ордеров (sell, buy)
+        account: Имя Аккаунта в Базе Данных
+        database: Путь к Базе Данных
+        apikeys: API Ключи Аккаунта
+        test_mode: Флаг Тестового Режима Торговли (на тестовом Сервере)
+        exchange: Авторизированное Соединение с Биржей
+        steps: Шаги Цены, Объема, Минимиальный Объем Ордера
+        prices: Полный Список Цен по всему диапазону
+        amounts: Номинальный Размер Каждого Ордера. Перед выставлением корректируется в случ некотором интервале
+        bot_name: Имя Бота в Базе Данных
+        """
+        self.symbol: str = symbol
+        self.volume: float = volume
+        self.zero_price: float = zero_price
+        self.min_spred: float = min_spred if side_orders == 'sell' else -min_spred
+        self.max_spred: float = max_spred if side_orders == 'sell' else -max_spred
+        self.num_orders: int = int(num_orders)
+        self.side_orders: SideType = side_orders
+        self.account: str = account
+        self.database: str = database
+        self.apikeys, self.test_mode = self.get_data_from_db() # dict, bool
+        self.exchange, self.steps = self.connect_exchange() # BitTeam, dict
         self.correct_num_orders()
-        self.prices = self.get_prices()
-        self.amounts = self.get_amounts()
-        self.bot_name = bot_name
+        self.prices: list = self.get_prices()
+        self.amounts: float = self.get_amounts()
+        self.bot_name: str = bot_name
 
-    def get_data_from_bd(self):
+
+    def round_price(self, price):
+        return round(price, self.steps['priceStep'])
+
+    def round_amount(self, volume):
+        return round(volume, self.steps['baseStep'])
+
+    def get_random_amount(self):
+        return self.round_amount(uniform(0.8, 1.2) * self.amounts)
+
+    def get_data_from_db(self):
+        """
+        Данные по Аккаунту из Базы Данных
+        """
         try:
             with sq.connect(self.database) as connect:
                 # connect.row_factory = sq.Row
@@ -43,9 +70,12 @@ class Bot:
                 return dict(apiKey=responce[0], secret=responce[1]), is_test_trade_mode(responce[2])
         except Exception as error:
             print('Нет Доступа к базе | Проверь также имя Аккаунта.')
-            raise(error)
+            raise (error)
 
     def connect_exchange(self):
+        """
+        Соединение с Биржей. Учитывается режи м торговли Реальный или Тестовый
+        """
         try:
             exchange = BitTeam()
             exchange.set_test_mode(self.test_mode)
@@ -70,30 +100,29 @@ class Bot:
                     minAmount = float(data['settings']['limit_usd']) )
 
     def correct_num_orders(self):
-        if self.side_orders == 'sell': spred = self.min_spred
-        if self.side_orders == 'buy': spred = self.max_spred
+        """
+        Корректирую Число Ордеров,
+        тк возможны случаи когда можно попытаться мылым объемом зайти на больш количество Ордеров
+        """
+        if self.side_orders == 'sell':
+            spred = self.min_spred
+        else: # 'buy'
+            spred = self.max_spred
         price = self.zero_price * (1 + 0.01 * spred) / self.num_orders
         cost_usdt = (self.volume * price)
         if cost_usdt / self.num_orders < self.steps['minAmount']:
             self.num_orders = int(cost_usdt / self.steps['minAmount'])
         return self.num_orders
 
-    def round_price(self, price):
-        return round(price, self.steps['priceStep'])
-
-    def round_amount(self, volume):
-        return round(volume, self.steps['baseStep'])
-
     def get_prices(self):
+        """
+        Получение Массива цен по Всему Диапазону
+        В зависимости от ситуации в стакана часть цен может отсекаться
+        Все что хуже лучших цен на рынке
+        """
         start_price = self.round_price(self.zero_price * (1 + 0.01 * self.min_spred))
         stop_price = self.round_price(self.zero_price * (1 + 0.01 * self.max_spred))
         delta_price = self.round_price((stop_price - start_price) / self.num_orders)
-        # step = float('0.' + '0' * (self.steps['priceStep']-1) + '1')
-        # if self.side_orders == 'sell': step = -step
-        # prices = [start_price]
-        # for price in range(2, self.num_orders):
-        #     prices.append(self.round_price(prices[-1] + delta_price))
-        # prices.append(stop_price + step)
         prices = [start_price]
         for price in range(1, self.num_orders):
             prices.append(self.round_price(prices[-1] + delta_price))
@@ -103,98 +132,74 @@ class Bot:
         """
         ПОСТОЯННЫЙ Объем
         S = a * n
+        Номинальный Объем. При Создании Ордеров можно дополнительно варьировать в заданном интервале изменений
         """
         return self.round_amount(self.volume / self.num_orders)
 
-    def get_amounts2(self):
+    def get_actual_orderbook_prices(self):
         """
-        ПОКА В РАЗРАБОТКЕ Также необходимо будет при открытиии ордеров zip(price, volume)
-        Линейная Зависимость
-        y = a + bx
-        S = a*n + 0.5b*n = n(a + 0.5b)
+        Получение Актуальных Цен исходя из ситуации в стакане
         """
-        start = 0.35
-        increase = 1
-        volume = self.num_orders * (start + 0.5 * increase)
+        actual_prices = self.prices
+        orderbook = self.exchange.fetch_order_book(self.symbol)['result']
+        match self.side_orders:
+            case 'sell':
+                bids = orderbook['bids']
+                if len(bids):
+                    best_price = float(bids[0][0])
+                    actual_prices = [price for price in self.prices if price > best_price]
+            case 'buy':
+                asks = orderbook['asks']
+                if len(asks):
+                    best_price = float(asks[0][0])
+                    actual_prices = [price for price in self.prices if price < best_price]
+        return actual_prices
 
+    def get_my_orders(self) -> dict:
+        try:
+            my_orders: dict = self.exchange.fetch_orders(self.symbol)['result']
+        except:
+            my_orders = dict(count=0)
+            print('Нет Подключения к базе')
+        return my_orders
 
+    def get_actual_prices(self):
+        """
+        Определение Цен по которым нет моих Ордеров. Контролирую исполнение своих ордеров
+        """
+        check_prices = self.get_actual_orderbook_prices()
+        my_orders = self.get_my_orders()
+        if not my_orders['count']:
+            return check_prices
+        order_prices = [float(order['price']) for order in my_orders['orders']]
+        return [price for price in check_prices if price not in order_prices]
 
-    def create_orders(self):
-
+    def set_orders(self):
+        """
+        Создаю Ордера на уровнях Актуальных Цен
+        """
         actual_prices = self.get_actual_prices()
-        orders = pd.DataFrame(columns=('id', 'bot_name', 'symbol', 'side', 'price', 'amount'))
         for price in actual_prices:
-            # Здесь возможно необходим будет цикл while для предотвращения сбоев при неработающей бирже
-            # Пока все не запишутся успешно дальше продолжать нет смысла!
+            # При неработающей бирже он пропустит эти Действия НЕ вывалится с ошибкой
+            # В след Цикле он должен выявить что по этим ценам не стоит ордеров и снова попытаться выставить ордера.
             try:
-                order = self.exchange.create_order(
+                self.exchange.create_order(
                     symbol=self.symbol,
                     type='limit',
                     side=self.side_orders,
-                    amount=self.amounts,
+                    amount=self.get_random_amount(),
                     price=price)['result']
-                orders.loc[len(orders)] = (order['id'],
-                                           self.bot_name,
-                                           format_UPP_symbol(order['pair']),
-                                           order['side'],
-                                           order['price'],
-                                           order['quantity'])
+                # print(f'Создан Ордер {price = }')
             except:
                 print(f"Не удалось Создать Ордер: {price = }, {self.amounts = }")
-        self.wrire_orders_db(orders)
 
-    def is_other_side_common_orders(self) -> bool:
-        """
-        Проверить есть ли Органические Ордера с лучшей Ценой в Другую Сторону для sell -> buy и наоборот
-        А нужно ли?
-        """
-        orderbook = self.exchange.fetch_order_book(self.symbol)['result']
+    def delete_all_orders(self):
+
         match self.side_orders:
             case 'sell':
-                best_price = orderbook['bids'][0][0]
-                my_price = max(self.prices)
-                return True if best_price > my_price else False
+                pass
             case 'buy':
-                best_price = orderbook['asks'][0][0]
-                my_price = min(self.prices)
-                return True if best_price < my_price else False
-
-    def get_actual_prices(self):
-        orderbook = self.exchange.fetch_order_book(self.symbol)['result']
-        match self.side_orders:
-            case 'sell':
-                best_price = orderbook['bids'][0][0]
-                actual_prices = [price for price in self.prices if price > best_price]
-            case 'buy':
-                best_price = orderbook['asks'][0][0]
-                actual_prices = [price for price in self.prices if price < best_price]
-        return actual_prices
-
-
-
-
-    def wrire_orders_db(self, orders: pd.DataFrame):
-        try:
-            with sq.connect(self.database) as connect:
-                # connect.row_factory = sq.Row
-                curs = connect.cursor()
-                for index, order in orders.iterrows():
-                    curs.execute(f""" INSERT INTO Orders VALUES(?, ?, ?, ?, ?, ?)""",
-                    (order['id'], order['bot_name'], order['symbol'], order['side'], order['price'], order['amount']))
-        except Exception as error:
-            print('Нет Доступа к базе')
-            raise(error)
-
-    def get_id_orders_db(self):
-        try:
-            with sq.connect(self.database) as connect:
-                # connect.row_factory = sq.Row
-                curs = connect.cursor()
-                curs.execute(f"SELECT id FROM Orders WHERE bot_name IS '{self.bot_name}'")
-                return [order[0] for order in curs]
-        except Exception as error:
-            print('Нет Доступа к базе')
-            raise(error)
+                pass
 
 
 
@@ -202,10 +207,9 @@ if __name__ == '__main__':
 
     from DataBase.path_to_base import TEST_DB
     import json
-    from time import time
+    # from time import time
 
     div_line = '-' * 120
-    # FORMAT_dt = '%M:%S'
     pd.options.display.width = None  # Отображение Таблицы на весь Экран
     pd.options.display.max_columns = 20  # Макс Кол-во Отображаемых Колонок
     pd.options.display.max_rows = 30  # Макс Кол-во Отображаемых Cтрок
@@ -225,29 +229,20 @@ if __name__ == '__main__':
     def jprint(data):
         print(json.dumps(data), div_line, sep='\n')
 
+    def mprint(*args):
+        print(*args, div_line, sep='\n')
+
 
     bot = Bot(SYMBOL, VOLUME, ZERO_PRICE, MIN_SPRED, MAX_SPRED, NUM_ORDERS, SIDE_ORDERS, ACCOUNT, DB, BOT_NAME)
-    print(bot.__dict__)
-    # ticker = bot.exchange.fetch_ticker("DEL/USDT")
-    # jprint(ticker)
-    # print(bot.get_prices())
-    #
-    # bot1 = Bot(SYMBOL, VOLUME, ZERO_PRICE, MIN_SPRED, MAX_SPRED, NUM_ORDERS, 'buy', ACCOUNT, DB)
-    # print(bot1.get_prices())
+    # print(bot.__dict__)
     # bot.exchange.cancel_all_orders()
-    #
-    # start_time = time()
-    # bot.create_orders()
-    # stop_time = time()
-    # delta_time = stop_time - start_time
-    # minutes = int(delta_time / 60)
-    # secundes = round((delta_time%60), 3)
-    # print('Total sec:', round(delta_time, 3))
-    # print(f"{minutes = }, {secundes = }")
 
-    # print(bot.get_id_orders_db())
+    check_prices = bot.get_actual_orderbook_prices()
+    actual_prices = bot.get_actual_prices()
+    mprint()
+    mprint(bot.prices)
+    mprint(check_prices)
+    mprint(actual_prices)
 
-
-
-
+    bot.set_orders()
 

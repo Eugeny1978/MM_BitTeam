@@ -245,7 +245,7 @@ class BitTeam(): # Request
         if not self.auth: self.authorization()
         return self.__request(path=f'/ccxt/order/{order_id}')
 
-    def fetch_orders(self, symbol=None, since=None, limit=1000, type:UserOrderTypes='active', offset=0, order='', where=''):
+    def fetch_orders(self, symbol=None, since=None, limit=10000, type:UserOrderTypes='active', offset=0, order='DESC', where=''):
         """
         fetch_orders(self, symbol: Optional[str] = None, since: Optional[int] = None, limit: Optional[int] = None, params={})
         Ордера за Текущую Дату
@@ -260,7 +260,8 @@ class BitTeam(): # Request
         payloads = {
             'limit': limit,
             'type': type,
-            'offset': offset
+            'offset': offset,
+            'order[timestamp]': order
             }
         self.__request(path=f'/ccxt/ordersOfUser', params=payloads)
         if symbol:
