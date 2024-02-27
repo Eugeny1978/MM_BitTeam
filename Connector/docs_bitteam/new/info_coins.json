@@ -1,0 +1,238 @@
+{
+  "ZNX": {
+    "name": "ZeNeX Coin",
+    "unified_cryptoasset_id": 30,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1e-05,
+    "max_withdraw": 10000
+  },
+  "DUSD": {
+    "name": "DUSD",
+    "unified_cryptoasset_id": 36,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1,
+    "max_withdraw": 100000
+  },
+  "BTC": {
+    "name": "Bitcoin",
+    "unified_cryptoasset_id": 11,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 5e-06,
+    "max_withdraw": 1000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "ETH": {
+    "name": "Ethereum",
+    "unified_cryptoasset_id": 2,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 0.02,
+    "max_withdraw": 10000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "UFO": {
+    "name": "Ufo",
+    "unified_cryptoasset_id": 17,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1e-05,
+    "max_withdraw": 10000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "VINU": {
+    "name": "Vita Inu",
+    "unified_cryptoasset_id": 29,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1e-05,
+    "max_withdraw": 1000000
+  },
+  "FLOKI": {
+    "name": "Floki",
+    "unified_cryptoasset_id": 32,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 100000,
+    "max_withdraw": 10000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "FARMS": {
+    "name": "Farmsent",
+    "unified_cryptoasset_id": 33,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1,
+    "max_withdraw": 10000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "ALTURA": {
+    "name": "ALTURA",
+    "unified_cryptoasset_id": 34,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 0.1,
+    "max_withdraw": 1000000
+  },
+  "BTT": {
+    "name": "Bit Team Token",
+    "unified_cryptoasset_id": 5,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 64,
+    "max_withdraw": 9000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "TON": {
+    "name": "Toncoin",
+    "unified_cryptoasset_id": 31,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1,
+    "max_withdraw": 100000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "LTC": {
+    "name": "Litecoin",
+    "unified_cryptoasset_id": 13,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 0.0001,
+    "max_withdraw": 100,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "PMS": {
+    "name": "Property Management System",
+    "unified_cryptoasset_id": 35,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1e-05,
+    "max_withdraw": 10000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "HRPT": {
+    "name": "Homeunity",
+    "unified_cryptoasset_id": 38,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1e-05,
+    "max_withdraw": 10000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "OGZ": {
+    "name": "OGzClub",
+    "unified_cryptoasset_id": 37,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1,
+    "max_withdraw": 10000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "DEL": {
+    "name": "Decimal",
+    "unified_cryptoasset_id": 9,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 0.1,
+    "max_withdraw": 5000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "TRX": {
+    "name": "Tron",
+    "unified_cryptoasset_id": 15,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 10,
+    "max_withdraw": 10000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "LOCKER": {
+    "name": "Locker",
+    "unified_cryptoasset_id": 25,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 0.001,
+    "max_withdraw": 10000000,
+    "maker_fee": 0.02,
+    "taker_fee": 0.02
+  },
+  "USDT": {
+    "name": "Tether USD",
+    "unified_cryptoasset_id": 3,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1,
+    "max_withdraw": 100000
+  },
+  "BUSD": {
+    "name": "Binance USD",
+    "unified_cryptoasset_id": 24,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 0.0001,
+    "max_withdraw": 10000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "PZM": {
+    "name": "Prizm",
+    "unified_cryptoasset_id": 14,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 0.01,
+    "max_withdraw": 1000000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "HBIT": {
+    "name": "HashBit",
+    "unified_cryptoasset_id": 27,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 100,
+    "max_withdraw": 1000000
+  },
+  "BNB": {
+    "name": "Binance coin",
+    "unified_cryptoasset_id": 16,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 0.01,
+    "max_withdraw": 100000,
+    "maker_fee": 0.2,
+    "taker_fee": 0.2
+  },
+  "REV3L": {
+    "name": "REV3AL",
+    "unified_cryptoasset_id": 26,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 1000,
+    "max_withdraw": 1000000,
+    "maker_fee": 0.02,
+    "taker_fee": 0.02
+  },
+  "PEX": {
+    "name": "PEARDAO",
+    "unified_cryptoasset_id": 28,
+    "withdrawStatus": true,
+    "depositStatus": true,
+    "min_withdraw": 10,
+    "max_withdraw": 1000000
+  }
+}

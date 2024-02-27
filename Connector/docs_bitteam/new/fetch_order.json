@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "result": {
+    "id": 275785245,
+    "userId": 231,
+    "quantity": "100",
+    "pair": "dusd_usdt",
+    "side": "sell",
+    "price": "1.1",
+    "executed": "0",
+    "executedPrice": "0",
+    "status": "accepted",
+    "baseDecimals": 8,
+    "quoteDecimals": 6,
+    "pairId": 39,
+    "type": "limit",
+    "stopPrice": null,
+    "slippage": null,
+    "timestamp": "1709065041",
+    "orderId": "345"
+  }
+}

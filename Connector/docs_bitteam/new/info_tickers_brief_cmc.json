@@ -1,0 +1,242 @@
+{
+  "UFO_BTC": {
+    "base_id": 17,
+    "quote_id": 11,
+    "last_price": 2e-08,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 1
+  },
+  "FLOKI_USDT": {
+    "base_id": 32,
+    "quote_id": 3,
+    "last_price": 0,
+    "base_volume": null,
+    "quote_volume": null,
+    "isFrozen": 0
+  },
+  "TRX_PZM": {
+    "base_id": 15,
+    "quote_id": 14,
+    "last_price": 0,
+    "base_volume": null,
+    "quote_volume": null,
+    "isFrozen": 0
+  },
+  "ETH_USDT": {
+    "base_id": 2,
+    "quote_id": 3,
+    "last_price": 3249.174995,
+    "base_volume": 13.90833031,
+    "quote_volume": 44816.84911639824,
+    "isFrozen": 0
+  },
+  "BNB_DEL": {
+    "base_id": 16,
+    "quote_id": 9,
+    "last_price": 5080,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "ETH_DEL": {
+    "base_id": 2,
+    "quote_id": 9,
+    "last_price": 60086.532103,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "HRPT_USDT": {
+    "base_id": 38,
+    "quote_id": 3,
+    "last_price": 0.006676,
+    "base_volume": 923749.637,
+    "quote_volume": 6181.619839584,
+    "isFrozen": 0
+  },
+  "FARMS_USDT": {
+    "base_id": 33,
+    "quote_id": 3,
+    "last_price": 0.050511,
+    "base_volume": 782667.370106,
+    "quote_volume": 39614.88479864102,
+    "isFrozen": 0
+  },
+  "DEL_USDT": {
+    "base_id": 9,
+    "quote_id": 3,
+    "last_price": 0.004405,
+    "base_volume": 22288270.74388154,
+    "quote_volume": 119518.08303850856,
+    "isFrozen": 0
+  },
+  "BTT_DEL": {
+    "base_id": 5,
+    "quote_id": 9,
+    "last_price": 0.044012,
+    "base_volume": 537353.95654938,
+    "quote_volume": 23612.30636417138,
+    "isFrozen": 0
+  },
+  "DEL_BNB": {
+    "base_id": 9,
+    "quote_id": 16,
+    "last_price": 7.51e-05,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "BTT_USDT": {
+    "base_id": 5,
+    "quote_id": 3,
+    "last_price": 0.000255,
+    "base_volume": 165628727.26869595,
+    "quote_volume": 42652.29927989804,
+    "isFrozen": 0
+  },
+  "PZM_USDT": {
+    "base_id": 14,
+    "quote_id": 3,
+    "last_price": 0.001854,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "DEL_BTC": {
+    "base_id": 9,
+    "quote_id": 11,
+    "last_price": 1.5e-06,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "UFO_USDT": {
+    "base_id": 17,
+    "quote_id": 3,
+    "last_price": 4e-05,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "BNB_USDT": {
+    "base_id": 16,
+    "quote_id": 3,
+    "last_price": 395.330405,
+    "base_volume": 147.62415197,
+    "quote_volume": 58801.537829363144,
+    "isFrozen": 0
+  },
+  "LTC_USDT": {
+    "base_id": 13,
+    "quote_id": 3,
+    "last_price": 53.58,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "ETH_BTC": {
+    "base_id": 2,
+    "quote_id": 11,
+    "last_price": 0.080611,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "TRX_USDT": {
+    "base_id": 15,
+    "quote_id": 3,
+    "last_price": 0.031,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "BTC_USDT": {
+    "base_id": 11,
+    "quote_id": 3,
+    "last_price": 57240.589953,
+    "base_volume": 1.31225611,
+    "quote_volume": 73208.93409218616,
+    "isFrozen": 0
+  },
+  "TON_USDT": {
+    "base_id": 31,
+    "quote_id": 3,
+    "last_price": 2.157,
+    "base_volume": 53854.40609348,
+    "quote_volume": 116255.00314076662,
+    "isFrozen": 0
+  },
+  "BUSD_USDT": {
+    "base_id": 24,
+    "quote_id": 3,
+    "last_price": 0.999246,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "PMS_USDT": {
+    "base_id": 35,
+    "quote_id": 3,
+    "last_price": 0.018999,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "BTC_BUSD": {
+    "base_id": 11,
+    "quote_id": 24,
+    "last_price": 40800,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "PZM_DEL": {
+    "base_id": 14,
+    "quote_id": 9,
+    "last_price": 0.0355,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "OGZ_USDT": {
+    "base_id": 37,
+    "quote_id": 3,
+    "last_price": 0.0002,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "BTC_DEL": {
+    "base_id": 11,
+    "quote_id": 9,
+    "last_price": 410000.0000001,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "LOCKER_USDT": {
+    "base_id": 25,
+    "quote_id": 3,
+    "last_price": 0.003639,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "TRX_DEL": {
+    "base_id": 15,
+    "quote_id": 9,
+    "last_price": 1.101084,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  },
+  "REV3L_USDT": {
+    "base_id": 26,
+    "quote_id": 3,
+    "last_price": 0.0062,
+    "base_volume": 0,
+    "quote_volume": 0,
+    "isFrozen": 0
+  }
+}
