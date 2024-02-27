@@ -116,7 +116,7 @@ class Accounts:
 
     def get_balance(self):
         try:
-            balance = self.exchange.fetch_balance()
+            balance = self.exchange.fetch_balance()['result']
             indexes = ['free', 'used', 'total']
             columns = [balance['free'], balance['used'], balance['total']]
             df = pd.DataFrame(columns, index=indexes)
