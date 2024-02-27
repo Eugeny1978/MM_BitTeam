@@ -1,7 +1,7 @@
 import requests                                 # Библиотека для создания и обработки запросов
 import sqlite3 as sq                            # Библиотека  Работа с БД
 from typing import Literal                      # Создание Классов Перечислений
-from DataBase.path_to_base import DATABASE    # Путь к БД (хранение/запись Доступных Торгуемых Пар и их значений)
+from DataBase.path_to_base import BitTeam_DB    # Путь к БД (хранение/запись Доступных Торгуемых Пар и их значений)
 
 # Допустимый Формат Написания Торговых Пар (Символов)
 # symbol='del_usdt' - родной
@@ -20,7 +20,7 @@ class BitTeam(): # Request
     base_url = 'https://bit.team/trade/api'
     status = None           # Статус-код последнего запроса 200 - если ок
     data = None             # Данные последнего запроса
-    database = DATABASE
+    database = BitTeam_DB
     auth = None
     __name__ = 'BitTeam'
 
@@ -123,7 +123,7 @@ class BitTeam(): # Request
         """
         self.__request(path='/pairs')
         # На данный момент отказался от этого тк Базы бывают разные
-        # self.__load_tickers_database() # Возможно сделать доп проверку чтобы не постоянно скидывать в базу
+        self.__load_tickers_database() # Возможно сделать доп проверку чтобы не постоянно скидывать в базу
         return self.data
 
     def __load_tickers_database(self): # Применять ТОЛЬКО сразу после Метода info_tickers

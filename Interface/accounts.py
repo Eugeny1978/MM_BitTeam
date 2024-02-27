@@ -32,6 +32,11 @@ def calc_cost(price: float, amount: float) -> float:
 def calc_remaining(executed: float, amount: float) -> float:
     return amount - executed
 
+def is_test_trade_mode(mode: str) -> bool:
+    is_test_mode = False
+    if mode == 'Test': is_test_mode = True
+    return is_test_mode
+
 
 class Accounts:
 
@@ -52,10 +57,10 @@ class Accounts:
             with sq.connect(self.__database) as connect:
                 # connect.row_factory = sq.Row
                 curs = connect.cursor()
-                curs.execute(f"SELECT name, apiKey, secret FROM Accounts")
+                curs.execute(f"SELECT name, apiKey, secret, mode FROM Accounts")
                 accounts = dict()
                 for acc in curs:
-                    accounts[acc[0]] = dict(apiKey=acc[1], secret=acc[2])
+                    accounts[acc[0]] = dict(apiKey=acc[1], secret=acc[2], mode=acc[3])
                 return accounts
         except Exception as error:
             print('Нет Доступа к базе')
@@ -65,21 +70,50 @@ class Accounts:
         if account:
             self.trade_account = account
             self.trade_keys = self.data[account]
+            self.test_mode = is_test_trade_mode(self.data[account]['mode'])
             self.connect_exchange()
 
     def connect_exchange(self):
-        try:
-            self.exchange = BitTeam()
-        except Exception as error:
-            print('Биржа НЕдоступна')
-            raise(error)
+        # try:
+        #     self.exchange = BitTeam()
+        #
+        # except Exception as error:
+        #     print('Биржа НЕдоступна')
+        #     raise(error)
+        # if self.trade_account:
+        #     try:
+        #         self.exchange = BitTeam(self.trade_keys)
+        #     except Exception as error:
+        #         print('Биржа НЕдоступна')
+        #         raise (error)
+        # return self.exchange
+
+        self.exchange = BitTeam()
         if self.trade_account:
             try:
                 self.exchange = BitTeam(self.trade_keys)
+                self.exchange.set_test_mode(self.test_mode)
             except Exception as error:
                 print('Биржа НЕдоступна')
                 raise (error)
         return self.exchange
+
+
+        # try:
+        #     exchange = BitTeam()
+        #     exchange.set_test_mode(self.test_mode)
+        #     exchange.info_tickers() # обязательно освежить инфу по тикерам
+        # except Exception as error:
+        #     print('Биржа НЕдоступна')
+        #     raise(error)
+        # try:
+        #     exchange = BitTeam(self.apikeys)
+        #     exchange.set_test_mode(self.test_mode)
+        #     steps = self.get_steps(exchange.fetch_ticker(self.symbol))
+        # except Exception as error:
+        #     print('API Ключи НЕдействительны')
+        #     raise (error)
+        # return exchange, steps
 
     def get_balance(self):
         try:
@@ -114,10 +148,6 @@ class Accounts:
                 print(f"{symbol} | Не удалось получить Последнюю Цену Продажи")
         self.cost_balance = df
         return self.cost_balance
-
-
-
-
 
     def get_open_orders(self):
         df = pd.DataFrame(columns=ORDER_COLUMNS)

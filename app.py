@@ -41,10 +41,10 @@ with colCost:
 colSell, colBuy = tabs[1].columns(2)
 with colSell:
     st.markdown(':red[SELL Orders:]')
-    st.dataframe(orders.query("side == 'sell'").style.pipe(make_style_df), use_container_width=True) # height=300
+    st.dataframe(orders.query("side == 'sell'").reset_index(drop=True).style.pipe(make_style_df), use_container_width=True) # height=300
 with colBuy:
     st.markdown(':green[BUY Orders:]')
-    st.dataframe(orders.query("side == 'buy'").style.pipe(make_style_df), use_container_width=True)
+    st.dataframe(orders.query("side == 'buy'").reset_index(drop=True).style.pipe(make_style_df), use_container_width=True)
 
 tabs[2].markdown('Trades:')
 tabs[2].dataframe(trades.style.pipe(make_style_df))
