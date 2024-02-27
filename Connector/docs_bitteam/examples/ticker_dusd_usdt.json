@@ -1,0 +1,147 @@
+{
+  "ok": true,
+  "result": {
+    "pair": {
+      "id": 39,
+      "name": "dusd_usdt",
+      "baseAssetId": 32,
+      "quoteAssetId": 12,
+      "fullName": "DUSD USDT",
+      "description": "Dusd usdt pair",
+      "lastBuy": 0,
+      "lastSell": 0,
+      "lastPrice": 0,
+      "change24": 0,
+      "volume24": null,
+      "volume24USD": null,
+      "active": true,
+      "baseStep": 8,
+      "quoteStep": 6,
+      "status": 1,
+      "settings": {
+        "limit_usd": "0.1",
+        "price_max": "10000000000000",
+        "price_min": "1",
+        "price_tick": "1",
+        "pricescale": 10000,
+        "lot_size_max": "1000000000000000",
+        "lot_size_min": "1",
+        "lot_size_tick": "1",
+        "price_view_min": 8,
+        "default_slippage": 10,
+        "lot_size_view_min": 8
+      },
+      "asks": [],
+      "bids": [],
+      "updateId": null,
+      "timeStart": "2024-02-23T21:42:00.674Z",
+      "makerFee": 200,
+      "takerFee": 200,
+      "quoteVolume24": null,
+      "lowPrice24": null,
+      "highPrice24": null,
+      "baseCurrency": {
+        "id": 32,
+        "status": 1,
+        "symbol": "dusd",
+        "title": "DUSD",
+        "logoURL": null,
+        "isDiscount": false,
+        "address": "https://testnet.explorer.decimalchain.com",
+        "description": "DecimalUSD",
+        "decimals": 8,
+        "blockChain": "decimal",
+        "precision": 8,
+        "currentRate": null,
+        "active": true,
+        "timeStart": "2024-02-23T21:38:04.028Z",
+        "txLimits": {
+          "minDeposit": "100000",
+          "maxWithdraw": "10000000000000",
+          "minWithdraw": "100000000",
+          "withdrawCommissionFixed": "200000000"
+        },
+        "type": "crypto",
+        "typeNetwork": "externalGW",
+        "icon": null,
+        "idSorting": 16,
+        "links": [
+          {
+            "tx": "https://testnet.explorer.decimalchain.com/transactions/",
+            "address": "https://testnet.explorer.decimalchain.com/address/",
+            "blockChain": "decimal"
+          }
+        ],
+        "clientTxLimits": {
+          "minDeposit": "0.001",
+          "minWithdraw": "1",
+          "maxWithdraw": "100000",
+          "withdrawCommissionFixed": "2"
+        }
+      },
+      "quoteCurrency": {
+        "id": 12,
+        "status": 1,
+        "symbol": "usdt",
+        "title": "Tether USD",
+        "logoURL": "https://cryptologos.cc/logos/tether-usdt-logo.png?v=010",
+        "isDiscount": false,
+        "address": "https://etherscan.io/address/0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "description": "Tether USD",
+        "decimals": 6,
+        "blockChain": "Ethereum",
+        "precision": 6,
+        "currentRate": null,
+        "active": true,
+        "timeStart": "2021-02-22T07:00:00.000Z",
+        "txLimits": {
+          "minDeposit": "2000000",
+          "maxWithdraw": "10050000000",
+          "minWithdraw": "1000000",
+          "withdrawCommissionFixed": {
+            "Tron": "300000",
+            "Binance": "200000000000000000",
+            "Ethereum": "100000"
+          },
+          "withdrawCommissionPercentage": "NaN"
+        },
+        "type": "crypto",
+        "typeNetwork": "internalGW",
+        "icon": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHZpZXdCb3g9IjAgMCAzMCAzMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTAgMTVDMCA2LjcxNTczIDYuNzE1NzMgMCAxNSAwVjBDMjMuMjg0MyAwIDMwIDYuNzE1NzMgMzAgMTVWMTVDMzAgMjMuMjg0MyAyMy4yODQzIDMwIDE1IDMwVjMwQzYuNzE1NzMgMzAgMCAyMy4yODQzIDAgMTVWMTVaIiBmaWxsPSIjNkZBNjg4Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjMgN0g3VjExSDEzVjEyLjA2MkM4Ljk5MjAyIDEyLjMxNDYgNiAxMy4zMTAyIDYgMTQuNUM2IDE1LjY4OTggOC45OTIwMiAxNi42ODU0IDEzIDE2LjkzOFYyM0gxN1YxNi45MzhDMjEuMDA4IDE2LjY4NTQgMjQgMTUuNjg5OCAyNCAxNC41QzI0IDEzLjMxMDIgMjEuMDA4IDEyLjMxNDYgMTcgMTIuMDYyVjExSDIzVjdaTTcuNSAxNC41QzcuNSAxMy40NjA2IDkuMzMzMzMgMTIuMzY4IDEzIDEyLjA3NTZWMTUuNUgxN1YxMi4wNzU5QzIwLjkzODQgMTIuMzkyNyAyMi41IDEzLjYzMzkgMjIuNSAxNC41QzIyLjUgMTUuMzIyIDIwLjAwMDggMTUuODA2MSAxNyAxNS45NTI1QzE1LjcwODIgMTYuMDQ2MiAxMy43OTUxIDE1Ljk4MjYgMTMgMTUuOTM5MUM5Ljk5OTIxIDE1Ljc1NTkgNy41IDE1LjE4MDkgNy41IDE0LjVaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K",
+        "idSorting": 0,
+        "links": [
+          {
+            "tx": "https://rinkeby.etherscan.io/tx/",
+            "address": "https://rinkeby.etherscan.io/address/",
+            "blockChain": "Ethereum"
+          },
+          {
+            "tx": "https://shasta.tronscan.org/#/transaction/",
+            "address": "https://shasta.tronscan.org/#/address/",
+            "blockChain": "Tron"
+          },
+          {
+            "tx": "https://testnet.bscscan.com/tx/",
+            "address": "https://testnet.bscscan.com/address/",
+            "blockChain": "Binance"
+          }
+        ],
+        "clientTxLimits": {
+          "minDeposit": "2",
+          "minWithdraw": "1",
+          "maxWithdraw": "10050",
+          "withdrawCommissionPercentage": "NaN",
+          "withdrawCommissionFixed": {
+            "Tron": "0.3",
+            "Binance": "0.2",
+            "Ethereum": "0.1"
+          }
+        }
+      },
+      "quantities": {
+        "asks": "0",
+        "bids": "0"
+      }
+    }
+  }
+}
