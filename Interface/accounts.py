@@ -1,8 +1,7 @@
 import sqlite3 as sq
-from datetime import datetime
 import pandas as pd
 from Connector.bitteam import BitTeam
-from DataBase.path_to_base import TEST_DB, DATABASE
+from DataBase.path_to_base import TEST_DB
 
 FORMAT_dt = '%Y-%m-%d %H:%M:%S'
 ORDER_COLUMNS = ('id', 'symbol', 'type', 'side', 'price', 'amount', 'cost', 'ramaining', 'datetime')
@@ -96,23 +95,6 @@ class Accounts:
                 print('Биржа НЕдоступна')
                 raise (error)
         return self.exchange
-
-
-        # try:
-        #     exchange = BitTeam()
-        #     exchange.set_test_mode(self.test_mode)
-        #     exchange.info_tickers() # обязательно освежить инфу по тикерам
-        # except Exception as error:
-        #     print('Биржа НЕдоступна')
-        #     raise(error)
-        # try:
-        #     exchange = BitTeam(self.apikeys)
-        #     exchange.set_test_mode(self.test_mode)
-        #     steps = self.get_steps(exchange.fetch_ticker(self.symbol))
-        # except Exception as error:
-        #     print('API Ключи НЕдействительны')
-        #     raise (error)
-        # return exchange, steps
 
     def get_balance(self):
         try:

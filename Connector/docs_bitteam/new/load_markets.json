@@ -1,212 +1,219 @@
 {
-  "TON/USDT": {
-    "id": 48,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "UFO/BTC": {
-    "id": 38,
+  "BTT/USDT": {
+    "id": 20,
     "baseStep": 8,
     "quoteStep": 8,
     "priceStep": 6,
-    "limit_usd": "0.1"
+    "limit_usd": 0.1
+  },
+  "DUSD/USDT": {
+    "id": 39,
+    "baseStep": 8,
+    "quoteStep": 6,
+    "priceStep": 8,
+    "limit_usd": 0.1
+  },
+  "TDEL/USDT": {
+    "id": 7,
+    "baseStep": 8,
+    "quoteStep": 6,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "TDEL/RUB": {
+    "id": 37,
+    "baseStep": 8,
+    "quoteStep": 4,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "ETH/RUB": {
+    "id": 36,
+    "baseStep": 8,
+    "quoteStep": 4,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "BTC/USDT": {
+    "id": 5,
+    "baseStep": 8,
+    "quoteStep": 6,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "RUB/USDT": {
+    "id": 38,
+    "baseStep": 4,
+    "quoteStep": 6,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "BTC/BUSD": {
+    "id": 27,
+    "baseStep": 8,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "BTT/TDEL": {
+    "id": 23,
+    "baseStep": 8,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "BNB/TDEL": {
+    "id": 16,
+    "baseStep": 8,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "EGGMAN/USDT": {
+    "id": 35,
+    "baseStep": 8,
+    "quoteStep": 6,
+    "priceStep": 15,
+    "limit_usd": 0.1
+  },
+  "TRX/BNB": {
+    "id": 17,
+    "baseStep": 6,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "UF2O/USDT": {
+    "id": 33,
+    "baseStep": 8,
+    "quoteStep": 6,
+    "priceStep": 8,
+    "limit_usd": 0.1
+  },
+  "BUSD/USDT": {
+    "id": 26,
+    "baseStep": 8,
+    "quoteStep": 6,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "ETH/BTC": {
+    "id": 3,
+    "baseStep": 8,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
   },
   "BNB/USDT": {
+    "id": 15,
+    "baseStep": 8,
+    "quoteStep": 6,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "PZM/USDT": {
+    "id": 8,
+    "baseStep": 2,
+    "quoteStep": 6,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "TRX/PZM": {
+    "id": 18,
+    "baseStep": 6,
+    "quoteStep": 2,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "UFO/USDT": {
+    "id": 21,
+    "baseStep": 8,
+    "quoteStep": 6,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "ETH/TDEL": {
+    "id": 4,
+    "baseStep": 8,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "UFO/TDEL": {
+    "id": 22,
+    "baseStep": 8,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "UFO/BTC": {
+    "id": 25,
+    "baseStep": 9,
+    "quoteStep": 8,
+    "priceStep": 8,
+    "limit_usd": 0.1
+  },
+  "TRX/TDEL": {
+    "id": 12,
+    "baseStep": 6,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
+  },
+  "BTC/TDEL": {
+    "id": 6,
+    "baseStep": 8,
+    "quoteStep": 8,
+    "priceStep": 8,
+    "limit_usd": 0.1
+  },
+  "LTC/USDT": {
     "id": 31,
     "baseStep": 8,
     "quoteStep": 6,
     "priceStep": 6,
-    "limit_usd": "0.1"
+    "limit_usd": 0.1
   },
-  "BTT/DEL": {
-    "id": 36,
-    "baseStep": 8,
+  "PZM/TDEL": {
+    "id": 10,
+    "baseStep": 2,
     "quoteStep": 8,
     "priceStep": 6,
-    "limit_usd": "0.1"
+    "limit_usd": 0.1
   },
-  "FARMS/USDT": {
-    "id": 44,
+  "FLOKI/USDT": {
+    "id": 34,
     "baseStep": 8,
     "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "UFO/USDT": {
-    "id": 37,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
+    "priceStep": 15,
+    "limit_usd": 0.1
   },
   "ETH/USDT": {
     "id": 2,
     "baseStep": 8,
     "quoteStep": 6,
     "priceStep": 6,
-    "limit_usd": "0.1"
+    "limit_usd": 0.1
   },
-  "BTC/USDT": {
-    "id": 22,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "LTC/USDT": {
-    "id": 27,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "DEL/BTC": {
-    "id": 33,
-    "baseStep": 8,
-    "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "HRPT/USDT": {
-    "id": 47,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "DEL/USDT": {
-    "id": 24,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "ETH/BTC": {
-    "id": 13,
-    "baseStep": 8,
-    "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "PZM/USDT": {
-    "id": 25,
-    "baseStep": 2,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "TRX/USDT": {
-    "id": 28,
-    "baseStep": 6,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "DEL/BNB": {
-    "id": 34,
-    "baseStep": 8,
-    "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "BNB/DEL": {
+  "UFO/BUSD": {
     "id": 32,
     "baseStep": 8,
     "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "ETH/DEL": {
-    "id": 6,
-    "baseStep": 8,
-    "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "TRX/PZM": {
-    "id": 30,
-    "baseStep": 6,
-    "quoteStep": 2,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "FLOKI/USDT": {
-    "id": 43,
-    "baseStep": 8,
-    "quoteStep": 8,
     "priceStep": 8,
-    "limit_usd": "0.1"
+    "limit_usd": 0.1
   },
-  "BUSD/USDT": {
-    "id": 39,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "PMS/USDT": {
-    "id": 45,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "BTT/USDT": {
-    "id": 35,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "BTC/BUSD": {
-    "id": 40,
-    "baseStep": 8,
-    "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "PZM/DEL": {
-    "id": 26,
-    "baseStep": 2,
-    "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "OGZ/USDT": {
-    "id": 46,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "BTC/DEL": {
-    "id": 18,
-    "baseStep": 8,
-    "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "LOCKER/USDT": {
-    "id": 41,
-    "baseStep": 8,
-    "quoteStep": 6,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "TRX/DEL": {
-    "id": 29,
+  "TRX/USDT": {
+    "id": 13,
     "baseStep": 6,
-    "quoteStep": 8,
-    "priceStep": 6,
-    "limit_usd": "0.1"
-  },
-  "REV3L/USDT": {
-    "id": 42,
-    "baseStep": 8,
     "quoteStep": 6,
     "priceStep": 6,
-    "limit_usd": "0.1"
+    "limit_usd": 0.1
+  },
+  "ETH/BNB": {
+    "id": 19,
+    "baseStep": 8,
+    "quoteStep": 8,
+    "priceStep": 6,
+    "limit_usd": 0.1
   }
 }

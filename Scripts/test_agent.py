@@ -12,7 +12,8 @@ class Contragent:
         self.account = account
         self.database = database
         self.apikeys, self.test_mode = self.get_data_from_db()
-        self.exchange, self.steps = self.connect_exchange()
+        self.exchange: BitTeam = self.connect_exchange()
+        self.steps = self.get_steps()
 
     def round_price(self, price):
         return round(price, self.steps['priceStep'])
@@ -49,25 +50,18 @@ class Contragent:
         try:
             exchange = BitTeam(self.apikeys)
             exchange.set_test_mode(self.test_mode)
-            steps = self.get_steps(exchange.fetch_ticker(self.symbol))
         except Exception as error:
             print('API Ключи НЕдействительны')
             raise (error)
-        return exchange, steps
+        return exchange
 
-    def get_steps(self, tiker: dict):
-        data = tiker['result']['pair']
-        return dict(priceStep=data['settings']['price_view_min'],
-                    baseStep=data['baseStep'],
-                    quoteStep=data['quoteStep'],
-                    minAmount=float(data['settings']['limit_usd']))
+    def get_steps(self):
+        return self.exchange.markets[self.symbol]
 
 
 
 if __name__ == '__main__':
     from DataBase.path_to_base import TEST_DB
-    import json
-    from time import time
 
     div_line = '-' * 120
     pd.options.display.width = None  # Отображение Таблицы на весь Экран
@@ -76,7 +70,7 @@ if __name__ == '__main__':
 
     # PARAMS
     SYMBOL = 'DUSD/USDT'
-    ACCOUNT =  'TEST_Luchnik' # 'TEST_Korolev'
+    ACCOUNT = 'TEST_Korolev'  # 'TEST_Korolev' 'TEST_Luchnik'
     DB = TEST_DB
 
     agent = Contragent(SYMBOL, ACCOUNT, DB)
@@ -86,3 +80,15 @@ if __name__ == '__main__':
 
     # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 50, 0.982)
     # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 50, 0.981)
+    # for i in range(1, 11):
+    #     agent.exchange.create_order(SYMBOL, 'market', 'buy', amount=i)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'sell', 100, 1)
+
+    # agent.exchange.create_order(SYMBOL, 'limit', 'sell', 100, 1)
+    # agent.exchange.create_order('ETH/USDT', 'limit', 'sell', 0.11, 3500)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 100, 0.9)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'sell', 110, 1.1)
+    # agent.exchange.create_order('ETH/USDT', 'limit', 'sell', 0.12, 3600)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'sell', 120, 1.2)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 110, 0.8)
+    # agent.exchange.create_order('ETH/USDT', 'limit', 'buy', 0.12, 2700)

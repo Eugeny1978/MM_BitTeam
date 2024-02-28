@@ -7,8 +7,7 @@ from typing import Literal      # Создание Классов Перечис
 SideType = Literal['buy', 'sell']
 # DBType = Literal['TEST_DB', 'DATABASE']
 
-def is_test_trade_mode(mode: str) -> bool:
-    return True if mode == 'Test' else False
+
 
 class Bot:
 
@@ -41,12 +40,16 @@ class Bot:
         self.account: str = account
         self.database: str = database
         self.apikeys, self.test_mode = self.get_data_from_db() # dict, bool
-        self.exchange, self.steps = self.connect_exchange() # BitTeam, dict
+        self.exchange: BitTeam = self.connect_exchange() # dict , self.steps
+        self.steps: dict = self.get_steps()
         self.correct_num_orders()
         self.prices: list = self.get_prices()
         self.amounts: float = self.get_amounts()
         self.bot_name: str = bot_name
 
+    @staticmethod
+    def is_test_trade_mode(mode: str) -> bool:
+        return True if mode == 'Test' else False
 
     def round_price(self, price):
         return round(price, self.steps['priceStep'])
@@ -67,7 +70,7 @@ class Bot:
                 curs = connect.cursor()
                 curs.execute(f"SELECT apiKey, secret, mode FROM Accounts WHERE name IS '{self.account}'")
                 responce = curs.fetchone()
-                return dict(apiKey=responce[0], secret=responce[1]), is_test_trade_mode(responce[2])
+                return dict(apiKey=responce[0], secret=responce[1]), self.is_test_trade_mode(responce[2])
         except Exception as error:
             print('Нет Доступа к базе | Проверь также имя Аккаунта.')
             raise (error)
@@ -86,18 +89,14 @@ class Bot:
         try:
             exchange = BitTeam(self.apikeys)
             exchange.set_test_mode(self.test_mode)
-            steps = self.get_steps(exchange.fetch_ticker(self.symbol))
+            # steps = self.get_steps(exchange.fetch_ticker(self.symbol))
         except Exception as error:
             print('API Ключи НЕдействительны')
             raise (error)
-        return exchange, steps
+        return exchange #, steps
 
-    def get_steps(self, tiker: dict):
-        data = tiker['result']['pair']
-        return dict(priceStep = data['settings']['price_view_min'],
-                    baseStep = data['baseStep'],
-                    quoteStep = data['quoteStep'],
-                    minAmount = float(data['settings']['limit_usd']) )
+    def get_steps(self):
+        return self.exchange.markets[self.symbol]
 
     def correct_num_orders(self):
         """
@@ -110,8 +109,8 @@ class Bot:
             spred = self.max_spred
         price = self.zero_price * (1 + 0.01 * spred) / self.num_orders
         cost_usdt = (self.volume * price)
-        if cost_usdt / self.num_orders < self.steps['minAmount']:
-            self.num_orders = int(cost_usdt / self.steps['minAmount'])
+        if cost_usdt / self.num_orders < self.steps['limit_usd']:
+            self.num_orders = int(cost_usdt / self.steps['limit_usd'])
         return self.num_orders
 
     def get_prices(self):
@@ -231,7 +230,7 @@ if __name__ == '__main__':
     ZERO_PRICE = 1
     MIN_SPRED = 1
     MAX_SPRED = 2
-    NUM_ORDERS = 5
+    NUM_ORDERS = 10
     SIDE_ORDERS = 'sell' # 'sell' 'buy'
     ACCOUNT = 'TEST_Luchnik'
     DB = TEST_DB
@@ -246,7 +245,7 @@ if __name__ == '__main__':
 
     bot = Bot(SYMBOL, VOLUME, ZERO_PRICE, MIN_SPRED, MAX_SPRED, NUM_ORDERS, SIDE_ORDERS, ACCOUNT, DB, BOT_NAME)
     # print(bot.__dict__)
-    # bot.exchange.cancel_all_orders()
+    bot.exchange.cancel_all_orders()
 
     check_prices = bot.get_actual_orderbook_prices()
     actual_prices = bot.get_actual_prices()
@@ -254,8 +253,10 @@ if __name__ == '__main__':
     mprint(bot.prices)
     mprint(check_prices)
     mprint(actual_prices)
+    mprint(bot.exchange.markets)
+    mprint(bot.steps)
 
-    bot.set_orders()
-
-    sells, buys = bot.delete_all_orders()
-    mprint(sells, buys)
+    # bot.set_orders()
+    #
+    # sells, buys = bot.delete_all_orders()
+    # mprint(sells, buys)

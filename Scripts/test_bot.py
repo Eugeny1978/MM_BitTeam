@@ -1,4 +1,4 @@
-from Connector.bitteam import BitTeam
+from Connector.old_versions.bitteam import BitTeam
 import pandas as pd
 import sqlite3 as sq
 
@@ -207,7 +207,6 @@ if __name__ == '__main__':
 
     from DataBase.path_to_base import TEST_DB
     import json
-    from time import time
 
     div_line = '-' * 120
     # FORMAT_dt = '%M:%S'

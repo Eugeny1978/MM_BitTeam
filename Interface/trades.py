@@ -10,7 +10,6 @@ class Trades:
         self.database: str = database
         self.symbol = symbol
 
-
     def get_trades(self):
         try:
             # Порядок Прямой от Ранних к Поздним сделкам
@@ -19,7 +18,6 @@ class Trades:
             print('Нет соединения с биржей')
             trades = []
         return trades
-
 
     def get_last_datetime_db(self):
         try:
@@ -32,8 +30,6 @@ class Trades:
         except Exception as error:
             print('Нет Доступа к базе')
             raise (error)
-
-
 
 
 if __name__ == '__main__':
