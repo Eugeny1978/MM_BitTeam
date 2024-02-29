@@ -51,6 +51,14 @@ def form_order_by(order: dict) -> dict:
             print(f"Не корректная Попытка указать порядок вывода Ордеров. | Ключ '{key}' НЕ Актуален")
     return formatted_order
 
+
+# # Фильтрую
+# # {key: val for key, val in d.items() if key in ('a', 'c', 'e')}
+# # {key: val for key, val in d.items() if val > 3}
+# # {key: val for key, val in d.items() if key in ('a', 'c', 'e') and val > 1}
+# sells = {key: value for key, value in orders.items() if key == 'side' and value == 'sell'}
+# buys = {key: value for key, value in orders.items() if key == 'side' and value == 'buy'}
+
 if __name__ == '__main__':
     p = p1 | p2
     print(f"{p = }")

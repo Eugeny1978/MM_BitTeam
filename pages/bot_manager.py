@@ -12,13 +12,13 @@ FORMAT_dt = '%Y-%m-%d %H:%M:%S'
 def get_bot_names():
     with sq.connect(DATABASE) as connect:
         curs = connect.cursor()
-        curs.execute(f"SELECT bot FROM BotStates")
+        curs.execute(f"SELECT name FROM Bots")
         return [row[0] for row in curs]
 
 def get_index_state(bot_name):
     with sq.connect(DATABASE) as connect:
         curs = connect.cursor()
-        curs.execute(f"SELECT state FROM BotStates WHERE bot IS '{bot_name}'")
+        curs.execute(f"SELECT state FROM Bots WHERE name IS '{bot_name}'")
         responce = curs.fetchone()[0]
         if not responce or responce == 'None' or responce == "NULL": return None
         return RADIO_OPTIONS.index(responce)
@@ -28,7 +28,7 @@ def update_bot_states(bots, states):
         curs = connect.cursor()
         for bot, state in zip(bots, states):
             if state == None: state = 'Stop'
-            curs.execute(f"UPDATE BotStates SET state = '{state}' WHERE bot IS '{bot}'")
+            curs.execute(f"UPDATE Bots SET state = '{state}' WHERE name IS '{bot}'")
 
 def set_states_all_bots(bots, state):
     # Цикл необходим тк иначе последнее изменение не отрабатывает Если менялось 1 раз
@@ -37,7 +37,7 @@ def set_states_all_bots(bots, state):
     with sq.connect(DATABASE) as connect:
         curs = connect.cursor()
         for bot in bots:
-            curs.execute(f"UPDATE BotStates SET state = '{state}' WHERE bot IS '{bot}'")
+            curs.execute(f"UPDATE Bots SET state = '{state}' WHERE name IS '{bot}'")
     print_message(state)
 
 def get_dt_now():

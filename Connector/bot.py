@@ -8,6 +8,12 @@ SideType = Literal['buy', 'sell']
 # DBType = Literal['TEST_DB', 'DATABASE']
 
 
+def get_bot_state(database, bot_name):
+    with sq.connect(database) as connect:
+        curs = connect.cursor()
+        curs.execute(f"SELECT state FROM Bots WHERE name IS '{bot_name}'")
+        return curs.fetchone()[0]
+
 
 class Bot:
 
@@ -77,26 +83,43 @@ class Bot:
 
     def connect_exchange(self):
         """
-        Соединение с Биржей. Учитывается режи м торговли Реальный или Тестовый
+        Соединение с Биржей. Учитывается режим торговли Реальный или Тестовый
         """
+        # try:
+        #     exchange = BitTeam()
+        #     if self.test_mode:
+        #         exchange.set_test_mode(self.test_mode)  # перейти в режим тестовой торговли
+        #         exchange.load_markets()                 # обновить инфо по тикерам
+        #         self.steps()                            # обновить инфо по шагам (из обновленного markets)
+        # except Exception as error:
+        #     print('Биржа НЕдоступна')
+        #     raise(error)
+        # try:
+        #     exchange.account = self.apikeys
+        # except Exception as error:
+        #     print('API Ключи НЕдействительны')
+        #     raise (error)
+        # return exchange
+
         try:
             exchange = BitTeam()
-            exchange.set_test_mode(self.test_mode)
-            exchange.info_tickers() # обязательно освежить инфу по тикерам
+            if self.test_mode:
+                exchange.set_test_mode(self.test_mode)
+                exchange.load_markets()
         except Exception as error:
             print('Биржа НЕдоступна')
-            raise(error)
+            raise (error)
         try:
-            exchange = BitTeam(self.apikeys)
-            exchange.set_test_mode(self.test_mode)
-            # steps = self.get_steps(exchange.fetch_ticker(self.symbol))
+            exchange.account = self.apikeys
+            # для проверки ключей, возможно, нужен любой запрос
         except Exception as error:
             print('API Ключи НЕдействительны')
             raise (error)
-        return exchange #, steps
+        return exchange
 
     def get_steps(self):
-        return self.exchange.markets[self.symbol]
+        self.steps = self.exchange.markets[self.symbol]
+        return self.steps
 
     def correct_num_orders(self):
         """
@@ -111,6 +134,7 @@ class Bot:
         cost_usdt = (self.volume * price)
         if cost_usdt / self.num_orders < self.steps['limit_usd']:
             self.num_orders = int(cost_usdt / self.steps['limit_usd'])
+            print(f"Кол-во Ордеров измененено на {self.num_orders}")
         return self.num_orders
 
     def get_prices(self):
@@ -154,7 +178,17 @@ class Bot:
                     actual_prices = [price for price in self.prices if price < best_price]
         return actual_prices
 
-    def get_my_orders(self) -> dict:
+    def get_actual_prices(self):
+        """
+        Определение Цен по которым нет моих Ордеров. Контролирую исполнение своих ордеров
+        """
+        check_prices = self.get_actual_orderbook_prices()
+        my_orders = self.get_my_orders() # сделать получение только ордеров на интервале
+        if not len(my_orders):
+            return check_prices
+        return [price for price in check_prices if price not in my_orders['price'].values]
+
+    def get_orders(self) -> dict:
         try:
             my_orders: dict = self.exchange.fetch_orders(self.symbol, limit=10000)['result']
         except:
@@ -162,16 +196,27 @@ class Bot:
             print('Нет Подключения к базе')
         return my_orders
 
-    def get_actual_prices(self):
+    def orders_to_dataframe(self, orders: dict) -> pd.DataFrame:
+        df = pd.DataFrame(columns=('id', 'symbol', 'side', 'price', 'amount'))
+        for order in orders['orders']:
+            df.loc[len(df)] = (order['id'],
+                               self.exchange.format_pair(order['pair']),
+                               order['side'],
+                               float(order['price']),
+                               float(order['quantity'])
+                               )
+        return df
+
+    def get_my_orders(self) -> pd.DataFrame:
         """
-        Определение Цен по которым нет моих Ордеров. Контролирую исполнение своих ордеров
+        Из всех Ордеров Аккаунта выбираю ордера на Моем Интервале и Направлении
+        Интервал реализован как   min_price <= price >= max_price
+        Можно реализовать по конкретным ценам на интервале используя self.prices - но думаю работать будет медленее
         """
-        check_prices = self.get_actual_orderbook_prices()
-        my_orders = self.get_my_orders()
-        if not my_orders['count']:
-            return check_prices
-        order_prices = [float(order['price']) for order in my_orders['orders']]
-        return [price for price in check_prices if price not in order_prices]
+        orders = self.orders_to_dataframe(self.get_orders())
+        filter = f"(side == '{self.side_orders}') and (price >= {min(self.prices)}) and (price <= {max(self.prices)})"
+        my_orders = orders.query(filter).reset_index(drop=True)
+        return my_orders
 
     def set_orders(self):
         """
@@ -181,36 +226,30 @@ class Bot:
         for price in actual_prices:
             # При неработающей бирже он пропустит эти Действия НЕ вывалится с ошибкой
             # В след Цикле он должен выявить что по этим ценам не стоит ордеров и снова попытаться выставить ордера.
+            rand_amount = self.get_random_amount()
+            order_info = f"{self.symbol} | {self.side_orders.upper()} | Amount: {rand_amount} | Price: {price}"
             try:
                 self.exchange.create_order(
                     symbol=self.symbol,
                     type='limit',
                     side=self.side_orders,
-                    amount=self.get_random_amount(),
+                    amount= rand_amount,
                     price=price)['result']
-                # print(f'Создан Ордер {price = }')
+                print(f'Создан Ордер | {order_info}')
             except:
-                print(f"Не удалось Создать Ордер: {price = }, {self.amounts = }")
+                print(f"НЕ Удалось Создать Ордер | {order_info}")
 
     def delete_all_orders(self):
         """
         Функция для отмены ВСЕХ ордеров на своем Интервале.
         """
-
-        orders = self.get_my_orders()
-        # Фильтрую
-        # {key: val for key, val in d.items() if key in ('a', 'c', 'e')}
-        # {key: val for key, val in d.items() if val > 3}
-        # {key: val for key, val in d.items() if key in ('a', 'c', 'e') and val > 1}
-        sells = {key: value for key, value in orders.items() if key == 'side' and value == 'sell'}
-        buys = {key: value for key, value in orders.items() if key == 'side' and value == 'buy'}
-        match self.side_orders:
-            case 'sell':
-                pass
-            case 'buy':
-                pass
-        return sells, buys
-
+        my_orders = self.get_my_orders() ###
+        for order_id in my_orders['id'].values:
+            try:
+                self.exchange.cancel_order(id=order_id)
+                print(f"Удален Ордер {order_id = }")
+            except:
+                print(f"Не получилось удалить Ордер {order_id = }")
 
 
 if __name__ == '__main__':
@@ -245,7 +284,7 @@ if __name__ == '__main__':
 
     bot = Bot(SYMBOL, VOLUME, ZERO_PRICE, MIN_SPRED, MAX_SPRED, NUM_ORDERS, SIDE_ORDERS, ACCOUNT, DB, BOT_NAME)
     # print(bot.__dict__)
-    bot.exchange.cancel_all_orders()
+    # bot.exchange.cancel_all_orders()
 
     check_prices = bot.get_actual_orderbook_prices()
     actual_prices = bot.get_actual_prices()
@@ -253,10 +292,12 @@ if __name__ == '__main__':
     mprint(bot.prices)
     mprint(check_prices)
     mprint(actual_prices)
-    mprint(bot.exchange.markets)
-    mprint(bot.steps)
+    # mprint(bot.exchange.markets)
+    # mprint(bot.steps)
 
     # bot.set_orders()
     #
-    # sells, buys = bot.delete_all_orders()
-    # mprint(sells, buys)
+    my_orders = bot.get_my_orders()
+    mprint(my_orders)
+    bot.delete_all_orders()
+

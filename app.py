@@ -1,6 +1,7 @@
 import streamlit as st
 from Interface.accounts import Accounts, make_style_df
 from DataBase.path_to_base import TEST_DB, DATABASE
+from datetime import date, timedelta, time, datetime
 
 # В терминале набрать: streamlit run app.py
 
@@ -46,8 +47,23 @@ with colBuy:
     st.markdown(':green[BUY Orders:]')
     st.dataframe(orders.query("side == 'buy'").reset_index(drop=True).style.pipe(make_style_df), use_container_width=True)
 
-tabs[2].markdown('Trades:')
-tabs[2].dataframe(trades.style.pipe(make_style_df))
+with tabs[2]:
+    with st.form('Trade FORM', clear_on_submit=False, border=False):
+        st.markdown('Trades:')
+        colA, colB = st.columns([1, 5])
+        with colA:
+            submitted = st.form_submit_button("Get Trades")
+            today = date.today()
+            default_date = today - timedelta(days=7) # weeks=1
+            start_date = st.date_input('from:', value=default_date, max_value=today) # format="YYYY.MM.DD" / 00:00 время
+            end_date = st.date_input('to:', max_value=today) + timedelta(days=1) # добавляю сутки
+            # t = st.time_input('Time:', value="now", step=timedelta(minutes=5)) # int = secundes = 900 = 15 minutes
+            # st.write(start_date.ctime())
+            # st.write(end_date.ctime())
+        with colB:
+            st.dataframe(trades.style.pipe(make_style_df), use_container_width=True)
+
+
 
 tabs[3].markdown('Results:')
 # tabs[3].dataframe(trades)

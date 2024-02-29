@@ -326,6 +326,22 @@ class BitTeam(): # Request
             payloads = payloads | order_payloads
         return self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
 
+    def fetch_my_trades_test(self, symbol=0, limit=10_000, offset=0, order={}): # тестить!
+        """
+        См док на исходном методе
+        """
+        if not self.auth: self.authorization()
+        payloads = {
+            'limit': limit,
+            'offset': offset,
+        }
+        if symbol:
+            payloads['pairId'] = self.__get_pairId_markets(symbol)
+        if len(order):
+            order_payloads = self.__form_order_by(order)
+            payloads = payloads | order_payloads
+        return self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
+
 
 if __name__ == '__main__':
 

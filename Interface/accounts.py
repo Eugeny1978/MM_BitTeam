@@ -5,7 +5,7 @@ from DataBase.path_to_base import TEST_DB
 
 FORMAT_dt = '%Y-%m-%d %H:%M:%S'
 ORDER_COLUMNS = ('id', 'symbol', 'type', 'side', 'price', 'amount', 'cost', 'ramaining', 'datetime')
-TRADES_COLUMNS  = ('id', 'symbol', 'side', 'price', 'amount', 'cost', 'makerUserId', 'takerUserId', 'datetime')
+TRADES_COLUMNS  = ('id', 'symbol', 'side', 'price', 'amount', 'cost', 'makerId', 'takerId', 'datetime')
 
 
 def make_style_df(styler):
@@ -43,6 +43,7 @@ class Accounts:
         self.acc_names = self.data.keys()
         self.trade_account = ''
         self.trade_keys = ''
+        self.test_mode = False
         self.exchange = self.connect_exchange()
         self.balance = pd.DataFrame()
         self.cost_balance = pd.DataFrame()
@@ -68,33 +69,25 @@ class Accounts:
             self.trade_account = account
             self.trade_keys = self.data[account]
             self.test_mode = is_test_trade_mode(self.data[account]['mode'])
-            self.connect_exchange()
+            self.exchange = self.connect_exchange()
 
     def connect_exchange(self):
-        # try:
-        #     self.exchange = BitTeam()
-        #
-        # except Exception as error:
-        #     print('Биржа НЕдоступна')
-        #     raise(error)
-        # if self.trade_account:
-        #     try:
-        #         self.exchange = BitTeam(self.trade_keys)
-        #     except Exception as error:
-        #         print('Биржа НЕдоступна')
-        #         raise (error)
-        # return self.exchange
-
-        self.exchange = BitTeam()
+        try:
+            exchange = BitTeam()
+        except Exception as error:
+            print('Биржа НЕдоступна')
+            raise (error)
         if self.trade_account:
             try:
-                self.exchange = BitTeam(self.trade_keys)
-                self.exchange.set_test_mode(self.test_mode)
-                self.exchange.info_tickers()
+                if self.test_mode:
+                    exchange.set_test_mode(self.test_mode)
+                    exchange.load_markets()
+                exchange.account = self.trade_keys
+                # для проверки ключей, возможно, нужен любой запрос
             except Exception as error:
-                print('Биржа НЕдоступна')
+                print('API Ключи НЕдействительны')
                 raise (error)
-        return self.exchange
+        return exchange
 
     def get_balance(self):
         try:
@@ -162,7 +155,7 @@ class Accounts:
         if not self.trade_account:
             self.trades = df
             return self.trades
-        response = self.exchange.fetch_my_trades(limit=1000)
+        response = self.exchange.fetch_my_trades()
         if not response['result']['count']:
             self.orders = df
             return self.orders
