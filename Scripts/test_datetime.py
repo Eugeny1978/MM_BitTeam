@@ -28,9 +28,44 @@ print(d9)
 d10 = datetime.datetime.timestamp(datetime.datetime.now())
 print(d10)
 d11 = datetime.datetime.fromtimestamp(d10, tz=pytz.utc)
-print(d11)
+print(f"d11 = {d11}")
 d12 = d11.strftime(form)[:-4]+'Z' # Можно попробовать закидывать без среза строку
 print(d12)
+
+date5 = "2024-02-28T10:39:11.0"
+form2 = ("%Y-%m-%dT%H:%M:%S.%f")
+dt1 = datetime.datetime.strptime(date4, form)
+dt2 = datetime.datetime.strptime(date5, form2)
+
+print(f'{dt1}')
+print(f'{dt2}')
+
+d_int = 1709116951
+dt = datetime.datetime.fromtimestamp(d_int, tz=pytz.utc)
+dtz = dt.strftime(form2)
+ddd = str(dt.strftime(form2))
+
+dd = datetime.date(2024, 3, 1)
+dz = datetime.datetime.fromisoformat(str(dd))
+dzz =dz.strftime(form2)
+dzz = dzz[:-3] + "Z"
+
+
+# tsz =
+# tsz = tsz[:-3] + 'Z'
+
+# dz = datetime.datetime.fromisoformat(dd)
+
+
+print(dt)
+print(dtz)
+print(ddd)
+print(dd)
+print(dz)
+print(dzz)
+
+
+
 
 
 

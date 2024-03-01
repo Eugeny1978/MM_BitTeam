@@ -93,7 +93,9 @@ if __name__ == '__main__':
     # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 110, 0.8)
     # agent.exchange.create_order('ETH/USDT', 'limit', 'buy', 0.12, 2700)
 
-    agent.exchange.create_order(SYMBOL, 'limit', 'sell', 10, 1.05)
-    agent.exchange.create_order(SYMBOL, 'limit', 'sell', 10, 1.04)
-    agent.exchange.create_order(SYMBOL, 'limit', 'buy', 10, 0.96)
-    agent.exchange.create_order(SYMBOL, 'limit', 'buy', 10, 0.95)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'sell', 10, 1.05)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'sell', 10, 1.04)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 10, 0.96)
+    # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 10, 0.95)
+
+    agent.exchange.create_order("ETH/USDT", 'limit', 'sell', 0.11, 3700)

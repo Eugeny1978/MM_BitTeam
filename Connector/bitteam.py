@@ -1,6 +1,10 @@
 import requests                                 # Библиотека для создания и обработки запросов
 import sqlite3 as sq                            # Библиотека  Работа с БД
 from typing import Literal                      # Создание Классов Перечислений
+from datetime import datetime, timedelta, date
+import pytz
+
+
 
 # Допустимый Формат Написания Торговых Пар (Символов)
 # symbol='del_usdt' - родной
@@ -188,8 +192,11 @@ class BitTeam(): # Request
         if not self.auth: self.authorization()
         return self.__request(path=f'/ccxt/balance') # Был Убран ['result']
 
-    def __get_pairId_markets(self, symbol):
-        return self.markets[symbol]['id']
+    def __get_pairId_markets(self, symbol: int or str):
+        if isinstance(symbol, str):
+            return self.markets[symbol]['id']
+        if isinstance(symbol, int):
+            return symbol
 
     def create_order(self, symbol: str, type: OrderType, side: OrderSide, amount: float, price: float=0):
         """
@@ -283,6 +290,41 @@ class BitTeam(): # Request
         self.__request(path=f'/ccxt/ordersOfUser', params=payloads)
         return self.data
 
+    def fetch_orders_test(self, symbol='', limit=10_000, type:UserOrderTypes='active', offset=0, order={}, where={}): # протестить
+        """
+        см докум в оригинальном запросе
+        """
+        if not self.auth: self.authorization()
+        payloads = {'limit': limit, 'type': type}
+        if symbol:
+            payloads['pair'] = self.format_symbol(symbol)
+        if offset:
+            payloads['offset'] = offset
+        if len(order):
+            order_payloads = self.__form_order_by(order)
+            payloads = payloads | order_payloads
+        if len(where):
+            # payloads['where[pairId]'] = self.__get_pairId_markets(where) # альтернативный фильтр по Символу
+            where_payloads = self.__form_filter_where(where, symbol)
+            payloads = payloads | where_payloads
+        self.__request(path=f'/ccxt/ordersOfUser', params=payloads)
+        return self.data
+
+    def __form_filter_where(self, where: dict, symbol: str) -> dict:
+        valid_keys = ['price', 'side', 'type']
+        if not symbol: valid_keys.append('pairId') # если задан символ фильтр по pairId - игнорирую
+        formatted_where = {}
+        for key, value in where.items():
+            if key in valid_keys:
+                f_key = f"where[{key}]"
+                if key == 'pairId':
+                    formatted_where[f_key] = self.__get_pairId_markets(value)
+                else:
+                    formatted_where[f_key] = str(value)
+            else:
+                print(f"__form_filter_where(where, symbol) | Ключ '{key}' для Фильтра-Вывода Ордеров НЕ Актуален.")
+        return formatted_where
+
     @staticmethod
     def __form_order_by(order: dict) -> dict:
         valid_keys = ('timestamp', 'price', 'side', 'type', 'executed', 'executedPrice')
@@ -292,7 +334,7 @@ class BitTeam(): # Request
                 f_key = f"order[{key}]"
                 formatted_order[f_key] = value
             else:
-                print(f"Не корректная Попытка указать порядок вывода Ордеров. | Ключ '{key}' НЕ Актуален")
+                print(f"__form_order_by(order)| Ключ '{key}' для Сортировки Ордеров НЕ Актуален.")
         return formatted_order
 
     def fetch_my_trades(self, symbol=0, limit=10_000, offset=0, order={}):
@@ -326,21 +368,45 @@ class BitTeam(): # Request
             payloads = payloads | order_payloads
         return self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
 
-    def fetch_my_trades_test(self, symbol=0, limit=10_000, offset=0, order={}): # тестить!
+    def fetch_my_trades_test(self, symbol=0, pairId = 0, limit=10_000, offset=0, order={}, startTime=0, endTime=0): # тестить!
         """
         См док на исходном методе
         """
         if not self.auth: self.authorization()
-        payloads = {
-            'limit': limit,
-            'offset': offset,
-        }
+        payloads = {'limit': limit}
         if symbol:
-            payloads['pairId'] = self.__get_pairId_markets(symbol)
+            payloads['pair'] = self.format_symbol(symbol)
+        if pairId and not symbol:
+            payloads['pairId'] = self.__get_pairId_markets(pairId)
+        if offset:
+            payloads['offset'] = offset
         if len(order):
             order_payloads = self.__form_order_by(order)
             payloads = payloads | order_payloads
+        if startTime:
+            payloads['startTime'] = self.get_timestampz(startTime)
+        if endTime:
+            payloads['endTime'] = self.get_timestampz(endTime)
         return self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
+
+    @staticmethod
+    def get_timestampz(dt: str or int or datetime or date) -> str:
+        form = ("%Y-%m-%dT%H:%M:%S.%f")
+        if isinstance(dt, str):
+            # "2024-02-28T10:39:11.0Z", "2024-02-28T10:39:11.133Z"
+            return dt
+        if isinstance(dt, int):
+            # return dt
+            dz = datetime.fromtimestamp(dt, tz=pytz.utc)
+        if isinstance(dt, date):
+            dz = datetime.fromisoformat(str(dt))
+        if isinstance(dt, datetime):
+            dz = dt.astimezone(tz=pytz.utc)
+        return dz.strftime(form)[:-3] + 'Z'
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -377,7 +443,7 @@ if __name__ == '__main__':
             raise (error)
 
     acc_name = 'Constantin'
-    acc_name__test = 'TEST_Korolev'
+    acc_name__test = 'TEST_Luchnik'
 
     # # Инициализация
     connect = BitTeam()
@@ -457,9 +523,42 @@ if __name__ == '__main__':
     # my_orders = connect.fetch_orders(order=order_by)
     # order_by = {'side': 'ASC'} # не сортирует
     # my_orders = connect.fetch_orders(order=order_by)
-    order_by = {'timestamp': 'ASC'} # Сортирует
-    my_orders = connect.fetch_orders(order=order_by)
-    jprint(my_orders)
+    # order_by = {'timestamp': 'ASC'} # Сортирует
+    # my_orders = connect.fetch_orders(order=order_by)
+    # jprint(my_orders)
+
+    # # fetch_orders_test !!!!!!!!!!!!!!!!!
+    # # (self, symbol='', limit=10_000, type:UserOrderTypes='active', offset=0, order={}, where={})
+    # orders = connect.fetch_orders_test()
+    # orders = connect.fetch_orders_test(symbol=SYMBOL_TEST)
+    # orders = connect.fetch_orders_test(limit=3)
+    # orders = connect.fetch_orders_test(type='history')
+    # orders = connect.fetch_orders_test(offset=1)
+
+    # order_by = {'timestamp': 'ASC'} #
+    # orders = connect.fetch_orders_test(order=order_by)
+    # order_by = {'side': 'ASC'} #
+    # orders = connect.fetch_orders_test(order=order_by)
+    # order_by = {'price': 'ASC'} #
+    # orders = connect.fetch_orders_test(order=order_by)
+
+    # where = {'pairId': 39}  #
+    # orders = connect.fetch_orders_test(where=where)
+    # where = {'pairId': SYMBOL_TEST}  #
+    # orders = connect.fetch_orders_test(where=where)
+    # where = {'pairId': 2}  #
+    # orders = connect.fetch_orders_test(symbol=SYMBOL_TEST, where=where)
+
+    # where = {'side': 'sell'}  #
+    # orders = connect.fetch_orders_test(where=where)
+    # where = {'side': 'buy'}  #
+    # orders = connect.fetch_orders_test(where=where)
+
+    # where = {'price': '> 1.2'}  #
+    # orders = connect.fetch_orders_test(where=where)
+    # where = {'price': 1}  #
+    # orders = connect.fetch_orders_test(where=where)
+    jprint(orders)
 
     # # cancel_order
     # id1 = 275785245 #
@@ -473,7 +572,7 @@ if __name__ == '__main__':
     # response = connect.cancel_all_orders()
     # jprint(response)
 
-    # # fetch_my_trades Сделать Сделки и Проверить! либо проверить на Реальном Акке где были сделки (жду когда поправят лимить)
+    # # fetch_my_trades Сделать Сделки и Проверить! где были сделки (жду когда поправят лимиты)
     # # (symbol=0, limit=10_000, offset=0, order='DESC')
     # trades = connect.fetch_my_trades()
     # trades = connect.fetch_my_trades(symbol=SYMBOL_TEST)
@@ -487,4 +586,34 @@ if __name__ == '__main__':
     # order_by = {'timestamp': 'ASC'} # не сортирует
     # trades = connect.fetch_my_trades(order=order_by)
     # jprint(trades)
+
+
+    # dt1 = 1709116951
+    # dt2 = "2024-02-28T10:39:11.133Z"
+    # dt3 = datetime.fromtimestamp(1709116952)
+    # dt4 = datetime.now()
+    # dt6 = date(2024, 3, 1)
+    # dtz1 = connect.get_timestampz(dt1)
+    # dtz2 = connect.get_timestampz(dt2)
+    # dtz3 = connect.get_timestampz(dt3)
+    # dtz4 = connect.get_timestampz(dt4)
+    # dtz5 = connect.get_timestampz(dt4 - timedelta(days=10))
+    # dtz6 = connect.get_timestampz(dt6)
+    # mprint(dtz1, dtz2, dtz3, dtz4, dtz5, dtz6)
+    # mprint(type(dtz1), type(dtz2), type(dtz3), type(dtz4), type(dtz5), type(dtz6))
+
+    # # fetch_my_trades_test (возможно потом переименую если тесты ок)
+    # # symbol = 0, pairId = 0, limit = 10_000, offset = 0, order = {}, startTime = 0, endTime = 0
+    # trades = connect.fetch_my_trades_test()
+    # trades = connect.fetch_my_trades_test(symbol=SYMBOL_TEST)
+    # trades = connect.fetch_my_trades_test(pairId=SYMBOL)
+    # trades = connect.fetch_my_trades_test(limit=5)
+    # trades = connect.fetch_my_trades_test(offset=2) #
+
+    # start_date = date(2024, 2, 20)
+    # start_date = 1709116951
+    # start_date = "2024-02-28T10:39:11.133Z"
+    # end_date = ''
+    # trades = connect.fetch_my_trades_test(startTime=start_date)
+    # mprint(trades)
 

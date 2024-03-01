@@ -150,12 +150,12 @@ class Accounts:
         self.orders = df
         return self.orders
 
-    def get_trades(self):
+    def get_trades(self, startTime=0, endTime=0):
         df = pd.DataFrame(columns=TRADES_COLUMNS)
         if not self.trade_account:
             self.trades = df
             return self.trades
-        response = self.exchange.fetch_my_trades()
+        response = self.exchange.fetch_my_trades_test(startTime=startTime, endTime=endTime)
         if not response['result']['count']:
             self.orders = df
             return self.orders

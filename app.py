@@ -15,17 +15,6 @@ accounts = Accounts(TEST_DB)
 account = st.selectbox('Account:', index=2, options=accounts.acc_names, placeholder="Choose an account name", key='account') # , on_change=
 accounts.set_trade_account(account)
 
-# Таблица Баланса
-balance = accounts.get_balance()
-# Таблица Стоимости Баланса
-cost_balance = accounts.get_cost_balanse()
-
-# Таблица Ордеров. Отдельно SELL отдельно BUY
-orders = accounts.get_open_orders()
-
-# Таблица Сделок
-trades = accounts.get_trades()
-
 tab_names = ('Balance', 'Orders', 'Trades', 'Results')
 tabs = st.tabs(tab_names)
 
@@ -33,13 +22,19 @@ tabs = st.tabs(tab_names)
 # tabs[0].dataframe(balance.style.pipe(make_style_df))
 colSpot, colCost = tabs[0].columns(2)
 with colSpot:
+    # Таблица Баланса
+    balance = accounts.get_balance()
     st.markdown('Spot Balance:')
     st.dataframe(balance.style.pipe(make_style_df), use_container_width=True)
 with colCost:
+    # Таблица Стоимости Баланса
+    cost_balance = accounts.get_cost_balanse()
     st.markdown('Cost Balance:')
     st.dataframe(cost_balance, use_container_width=True)
 
 colSell, colBuy = tabs[1].columns(2)
+# Таблица Ордеров. Отдельно SELL отдельно BUY
+orders = accounts.get_open_orders()
 with colSell:
     st.markdown(':red[SELL Orders:]')
     st.dataframe(orders.query("side == 'sell'").reset_index(drop=True).style.pipe(make_style_df), use_container_width=True) # height=300
@@ -60,7 +55,12 @@ with tabs[2]:
             # t = st.time_input('Time:', value="now", step=timedelta(minutes=5)) # int = secundes = 900 = 15 minutes
             # st.write(start_date.ctime())
             # st.write(end_date.ctime())
+            # st.write(start_date, type(start_date))
+            # st.write(end_date)
         with colB:
+            # Таблица Сделок
+            # trades = accounts.get_trades(startTime=start_date, endTime=end_date)
+            trades = accounts.get_trades()
             st.dataframe(trades.style.pipe(make_style_df), use_container_width=True)
 
 
