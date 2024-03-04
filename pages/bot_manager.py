@@ -2,12 +2,14 @@ import streamlit as st
 import sqlite3 as sq
 from datetime import datetime
 from DataBase.path_to_base import TEST_DB
+from Interface.accounts import Accounts
 
 # В терминале набрать: streamlit run app.py
 
 DATABASE = TEST_DB
 RADIO_OPTIONS: tuple = ('Run', 'Pause', 'Stop')
 FORMAT_dt = '%Y-%m-%d %H:%M:%S'
+SYMBOL = 'DUSD/USDT'
 
 def get_bot_names():
     with sq.connect(DATABASE) as connect:
@@ -72,9 +74,20 @@ for bot, column in zip(bot_names, columns):
 
 # colA, colB, colC, colD, colE = st.columns((1, 1, 1, 1, 6))
 colA, colB, colC, colD = st.columns(4)
-box = colA.checkbox("Change The Value First", key="box") # , label_visibility='hidden'  disabled=True
-run_button = colB.button('All Bots RUN', args=(bot_names, RADIO_OPTIONS[0]), use_container_width=True, on_click=set_states_all_bots)
-pause_button = colC.button('All Bots PAUSE', args=(bot_names, RADIO_OPTIONS[1]), use_container_width=True, on_click=set_states_all_bots) #
-stop_button = colD.button('All Bots STOP', args=(bot_names, RADIO_OPTIONS[2]), use_container_width=True, on_click=set_states_all_bots)
+with colA:
+    run_button = st.button('All Bots RUN', args=(bot_names, RADIO_OPTIONS[0]), use_container_width=True, on_click=set_states_all_bots)
+with colB:
+    pause_button = st.button('All Bots PAUSE', args=(bot_names, RADIO_OPTIONS[1]), use_container_width=True, on_click=set_states_all_bots)
+with colC:
+    stop_button = st.button('All Bots STOP', args=(bot_names, RADIO_OPTIONS[2]), use_container_width=True, on_click=set_states_all_bots)
+with colD:
+    # Поле выбора Аккаунта
+    accounts = Accounts(TEST_DB)
+    account = st.selectbox('Account:', index=5, options=accounts.acc_names, placeholder="Choose an account name", key='account')  # 5 -> 'TEST_Lychnik'
+    st.markdown('Перед Нажатием Остановите Всех Ботов!')
+    del_all_orders = st.button('Quickly DELETE all Orders', use_container_width=True)
+    if del_all_orders:
+        accounts.set_trade_account(account)
+        accounts.exchange.cancel_all_orders(symbol=SYMBOL)
 
 update_bot_states(bot_names, buttons)
