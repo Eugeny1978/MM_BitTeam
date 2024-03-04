@@ -1,11 +1,11 @@
 import sqlite3 as sq
 import pandas as pd
 from Connector.bitteam import BitTeam
-from DataBase.path_to_base import TEST_DB
 
 FORMAT_dt = '%Y-%m-%d %H:%M:%S'
 ORDER_COLUMNS = ('id', 'symbol', 'type', 'side', 'price', 'amount', 'cost', 'ramaining', 'datetime')
-TRADES_COLUMNS  = ('id', 'symbol', 'side', 'price', 'amount', 'cost', 'makerId', 'takerId', 'datetime')
+TRADES_COLUMNS  = ('id', 'symbol', 'side', 'price', 'amount', 'cost', 'makerId', 'takerId', 'fee', 'datetime')
+RESULTS_COLUMNS = ('side', 'amount', 'cost', 'fee', 'price')
 
 
 def make_style_df(styler):
@@ -26,7 +26,7 @@ def format_datetime(datetime: str) -> str:
     return datetime[:-5].replace('T', ' ')
 
 def calc_cost(price: float, amount: float) -> float:
-    return round(price * amount, 2)
+    return round(price * amount, 6)
 
 def calc_remaining(executed: float, amount: float) -> float:
     return amount - executed
@@ -49,6 +49,7 @@ class Accounts:
         self.cost_balance = pd.DataFrame()
         self.orders = pd.DataFrame(columns=ORDER_COLUMNS)
         self.trades = pd.DataFrame(columns=TRADES_COLUMNS)
+        self.results = pd.DataFrame(columns=RESULTS_COLUMNS)
 
     def get_accounts(self) -> dict:
         try:
@@ -150,15 +151,15 @@ class Accounts:
         self.orders = df
         return self.orders
 
-    def get_trades(self, startTime=0, endTime=0):
+    def get_trades(self, symbol='', startTime=0, endTime=0):
         df = pd.DataFrame(columns=TRADES_COLUMNS)
         if not self.trade_account:
             self.trades = df
             return self.trades
-        response = self.exchange.fetch_my_trades_test(startTime=startTime, endTime=endTime)
+        response = self.exchange.fetch_my_trades_test(symbol=symbol, startTime=startTime, endTime=endTime) #####
         if not response['result']['count']:
-            self.orders = df
-            return self.orders
+            self.trades = df
+            return self.trades
         trades = response['result']['trades']
         # ('id', 'symbol', 'side', 'price', 'amount', 'cost', 'makerUserId', 'takerUserId', 'datetime')
         for trade in trades:
@@ -172,49 +173,99 @@ class Accounts:
                 calc_cost(price, amount),
                 trade['makerUserId'],
                 trade['takerUserId'],
-                format_datetime(trade['updatedAt'])
+                self.get_fee(trade),
+                format_datetime(trade['updatedAt']) # поменять на преобразованное значение поля 'timestamp'
             )
-        self.orders = df
-        return self.orders
+        self.trades = df
+        return self.trades
+
+    def get_fee(self, trade: dict) -> float:
+        match trade['isCurrentSide']:
+            case 'maker':
+                type_fee = trade['feeMaker']
+            case 'taker':
+                type_fee = trade['feeTaker']
+        fee = float(type_fee['amount'])
+        # if trade['side'] == 'sell':
+        #     fee = fee  * round(float(trade['price']), 6)
+        return fee # уточнить в какой валюте
+    @staticmethod
+    def round_2(number):
+        return round(number, 4)
+
+    def get_trade_results(self) -> pd.DataFrame:
+
+        deals = pd.DataFrame(columns=RESULTS_COLUMNS)
+        for side in ('buy', 'sell'):
+            data = self.trades.query(f"side == '{side}'").copy().reset_index(drop=True)[list(RESULTS_COLUMNS)]
+            sum_amount = self.round_2(data['amount'].sum())
+            sum_cost = self.round_2(data['cost'].sum())
+            sum_fee = self.round_2(data['fee'].sum())
+            aw_price = round((sum_cost / sum_amount), 6)
+            deals.loc[len(deals)] = (side.upper()+'s', sum_amount, sum_cost, sum_fee, aw_price)
+
+        cols = (*RESULTS_COLUMNS[:3], RESULTS_COLUMNS[-1])
+        deals_fee = pd.DataFrame(columns=cols)
+        for side in ('buy', 'sell'):
+            data = self.trades.query(f"side == '{side}'").copy().reset_index(drop=True)[list(RESULTS_COLUMNS)]
+            sum_fee = self.round_2(data['fee'].sum())
+            if side == 'buy':
+                sum_amount = self.round_2(data['amount'].sum())
+                sum_cost = self.round_2(data['cost'].sum() + sum_fee)
+            else: # 'sell'
+                sum_amount = self.round_2(data['amount'].sum() + sum_fee)
+                sum_cost = self.round_2(data['cost'].sum())
+            aw_price = round((sum_cost / sum_amount), 6)
+            deals_fee.loc[len(deals_fee)] = (side.upper()+'s', sum_amount, sum_cost, aw_price)
+
+        return deals, deals_fee
+
+
+
+
 
 
 
 if __name__ == '__main__':
+
+    from Connector.logs import fprint
+    from DataBase.path_to_base import TEST_DB
 
     div_line = '-' * 120
     pd.options.display.width = None  # Отображение Таблицы на весь Экран
     pd.options.display.max_columns = 20  # Макс Кол-во Отображаемых Колонок
     pd.options.display.max_rows = 30  # Макс Кол-во Отображаемых Cтрок
 
-    def mprint(*args):
-        print(*args, div_line, sep='\n')
+    DB = TEST_DB
+    SYMBOL = 'DUSD/USDT'
+    ACCOUNT = 'TEST_Luchnik'
+
 
     # Инициализация
-    accounts = Accounts(TEST_DB)
+    accounts = Accounts(DB)
 
     # Подключение к Аккаунту
-    account = 'Constantin'
-    accounts.set_trade_account(account)
+    accounts.set_trade_account(ACCOUNT)
     # accounts.exchange.set_test_mode(True) # Тестовый режим
-    mprint('Account:',account, accounts.exchange)
+    fprint('Account:', ACCOUNT, accounts.exchange)
 
     # Таблица Баланса
     balance = accounts.get_balance()
-    mprint('Balance:', balance)
+    fprint('Balance:', balance)
 
     # Таблица Стоимости в USDT Баланса
     cost_balance = accounts.get_cost_balanse()
-    mprint('Cost Balance:', cost_balance)
+    fprint('Cost Balance:', cost_balance)
 
     # Таблица Ордеров. Отдельно SELL отдельно BUY
     orders = accounts.get_open_orders()
-    mprint('SELL Orders', orders.query("side == 'sell'"))
-    mprint('BUY Orders', orders.query("side == 'buy'"))
+    fprint('SELL Orders', orders.query("side == 'sell'"))
+    fprint('BUY Orders', orders.query("side == 'buy'"))
 
     # Таблица Сделок
-    trades = accounts.get_trades()
-    mprint('TRADES:', trades)
+    trades = accounts.get_trades(symbol=SYMBOL)
+    fprint('TRADES:', trades)
 
-
-
-
+    # Результаты Торговли
+    results = accounts.get_trade_results()
+    fprint('RESULTS: (excluding Fee)', results[0], 'RESULTS: (including Fee)', results[1])
