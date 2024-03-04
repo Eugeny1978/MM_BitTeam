@@ -1,19 +1,20 @@
-from Connector.bitteam import BitTeam
-import pandas as pd
-import sqlite3 as sq
-from random import uniform
-from typing import Literal      # Создание Классов Перечислений
+from Connector.bitteam import BitTeam   # Конннектор с Биржей
+import pandas as pd                     # Работа с Данными в Таблицах (ДатаФреймах)
+import sqlite3 as sq                    # Работа с Базой Данных
+from random import uniform              # Корректировка Ордеров задействую Случайное отклонение
+from typing import Literal              # Создание Классов Перечислений
 
 SideType = Literal['buy', 'sell']
 # DBType = Literal['TEST_DB', 'DATABASE']
 
-
 def get_bot_state(database, bot_name):
+    """
+    Получение Значения Режима Работы Бота
+    """
     with sq.connect(database) as connect:
         curs = connect.cursor()
         curs.execute(f"SELECT state FROM Bots WHERE name IS '{bot_name}'")
         return curs.fetchone()[0]
-
 
 class Bot:
 
@@ -85,32 +86,16 @@ class Bot:
         """
         Соединение с Биржей. Учитывается режим торговли Реальный или Тестовый
         """
-        # try:
-        #     exchange = BitTeam()
-        #     if self.test_mode:
-        #         exchange.set_test_mode(self.test_mode)  # перейти в режим тестовой торговли
-        #         exchange.load_markets()                 # обновить инфо по тикерам
-        #         self.steps()                            # обновить инфо по шагам (из обновленного markets)
-        # except Exception as error:
-        #     print('Биржа НЕдоступна')
-        #     raise(error)
-        # try:
-        #     exchange.account = self.apikeys
-        # except Exception as error:
-        #     print('API Ключи НЕдействительны')
-        #     raise (error)
-        # return exchange
-
         try:
             exchange = BitTeam()
             if self.test_mode:
-                exchange.set_test_mode(self.test_mode)
-                exchange.load_markets()
+                exchange.set_test_mode(self.test_mode)  # перейти в режим тестовой торговли
+                exchange.load_markets()                 # обновить инфо по тикерам
         except Exception as error:
             print('Биржа НЕдоступна')
             raise (error)
         try:
-            exchange.account = self.apikeys
+            exchange.account = self.apikeys             # авторизация
             # для проверки ключей, возможно, нужен любой запрос
         except Exception as error:
             print('API Ключи НЕдействительны')

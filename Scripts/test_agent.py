@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     # PARAMS
     SYMBOL = 'DUSD/USDT'
-    ACCOUNT = 'TEST_Luchnik'  # 'TEST_Korolev' 'TEST_Luchnik'
+    ACCOUNT = 'TEST_Korolev'  # 'TEST_Korolev' 'TEST_Luchnik'
     DB = TEST_DB
 
     agent = Contragent(SYMBOL, ACCOUNT, DB)
@@ -98,4 +98,11 @@ if __name__ == '__main__':
     # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 10, 0.96)
     # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 10, 0.95)
 
-    agent.exchange.create_order("ETH/USDT", 'limit', 'sell', 0.11, 3700)
+    # agent.exchange.create_order("ETH/USDT", 'limit', 'sell', 0.11, 3700)
+
+    # agent.exchange.create_order(SYMBOL, 'market', 'buy', 20)
+    # agent.exchange.create_order(SYMBOL, 'market', 'sell', 20)
+
+    # agent.exchange.create_order(SYMBOL, 'limit', 'buy', 200, 1.012)
+    agent.exchange.cancel_all_orders()
+

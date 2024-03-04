@@ -20,7 +20,7 @@ class BitTeam(): # Request
     /ccxt - приватные методы
     /cmc - публичные методы
     """
-    base_url = 'https://bit.team/trade/api'
+    base_url = 'https://bit.team/trade/api' # 'https://bit.team/trade/api' 'https://dkr.bit.team/trade/api'
     status = None           # Статус-код последнего запроса 200 - если ок
     data = None             # Данные последнего запроса
     auth = None
@@ -558,7 +558,7 @@ if __name__ == '__main__':
     # orders = connect.fetch_orders_test(where=where)
     # where = {'price': 1}  #
     # orders = connect.fetch_orders_test(where=where)
-    jprint(orders)
+    # jprint(orders)
 
     # # cancel_order
     # id1 = 275785245 #

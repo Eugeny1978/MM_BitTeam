@@ -1,13 +1,8 @@
-import sqlite3 as sq
 import pandas as pd
-from random import uniform
-from typing import Literal      # Создание Классов Перечислений
-import json
 from time import time, sleep
 from Connector.bot import Bot, get_bot_state
 from Connector.logs import jprint, fprint, get_datetime_now, get_time_now
 from DataBase.path_to_base import TEST_DB
-
 
 pd.options.display.width = None  # Отображение Таблицы на весь Экран
 pd.options.display.max_columns = 20  # Макс Кол-во Отображаемых Колонок
@@ -15,11 +10,11 @@ pd.options.display.max_rows = 30  # Макс Кол-во Отображаемы�
 
 # PARAMS
 SYMBOL = 'DUSD/USDT'
-VOLUME = 1000
+VOLUME = 300
 ZERO_PRICE = 1
 MIN_SPRED = 1
 MAX_SPRED = 2
-NUM_ORDERS = 10
+NUM_ORDERS = 50
 SIDE_ORDERS = 'sell' # 'sell' 'buy'
 ACCOUNT = 'TEST_Luchnik'
 DB = TEST_DB
