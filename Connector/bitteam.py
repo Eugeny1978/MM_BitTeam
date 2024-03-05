@@ -367,8 +367,40 @@ class BitTeam(): # Request
             order_payloads = self.__form_order_by(order)
             payloads = payloads | order_payloads
         self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
-        # self.data # Инвертивовать для MAKER side (buy - sell)
+        # Инвертивовать для MAKER side (buy - sell) - Изменить в self.data
+        self.invert_side_for_maker_in_my_trades()
         return self.data
+
+    def invert_side_for_maker_in_my_trades(self):
+        """
+        Данная функция "ИНВЕРТИРУЕТ" SIDE для списка сделок если ты МЕЙКЕР.
+        В Оригинальном Ответе по Запросу fetch_my_trades(). В случае 'maker'-а side (buy, sell) отображается некоректно.
+        Например: Выставил Лимитный Ордер на Продажу (sell) - он встал в стакан - ты мейкер.
+        Кто-то Исполнил его, то есть купил у тебя. Для него (для тейкера) сделка будет обозначена как Покупка (buy)
+        но и для тебя - мейкера - тоже возвращает как покупку!
+        Если ты выставляешь лримитный ордер, но он исполняется по уже имеющемся ордерам в стакане то в данном случае
+        ты тейкер - и все корректно отображается корректно.
+        """
+        if 'trades' in self.data['result'].keys():
+            inverted_trades = self.invert_side(self.data['result']['trades'])
+            self.data['result']['trades'] = inverted_trades
+
+    @staticmethod
+    def invert_side(trades):
+        """
+        Логика Преобразования для функции invert_side_for_maker_in_my_trades(self)
+        "ИНВЕРТИРУЕТ" SIDE для списка сделок если ты МЕЙКЕР.
+        """
+        for trade in trades:
+            if trade['isCurrentSide'] == 'maker':
+                match trade['side']:
+                    case 'buy':
+                        trade['side'] = 'sell'
+                    case 'sell':
+                        trade['side'] = 'buy'
+        return trades
+
+
 
 
     def fetch_my_trades_test(self, symbol=0, pairId = 0, limit=10_000, offset=0, order={}, startTime=0, endTime=0): # тестить!
@@ -390,7 +422,10 @@ class BitTeam(): # Request
             payloads['startTime'] = self.get_timestampz(startTime)
         if endTime:
             payloads['endTime'] = self.get_timestampz(endTime)
-        return self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
+        self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
+        # Инвертивовать для MAKER side (buy - sell) - Изменить в self.data
+        self.invert_side_for_maker_in_my_trades()
+        return self.data
 
     @staticmethod
     def get_timestampz(dt: str or int or datetime or date) -> str:
