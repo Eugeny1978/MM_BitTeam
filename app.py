@@ -71,7 +71,7 @@ with tabs[2]:
             trades = accounts.get_trades(symbol=trade_symbol)
             st.dataframe(trades.style.pipe(make_style_df), use_container_width=True)
 
-with tabs[3]:
+with tabs[3]: # Результат Торговли
     deals, deals_fee = accounts.get_trade_results()
     colA3, colB3 = st.columns(2)
     with colA3:
@@ -82,12 +82,3 @@ with tabs[3]:
         st.markdown('RESULTS: (including Fee)')
         st.dataframe(deals_fee.style.pipe(make_style_df), use_container_width=True)
         st.markdown(accounts.get_conclusion(deals_fee))
-
-
-
-
-
-
-
-# График Агрегированный по процентам
-# Результат Торговли
