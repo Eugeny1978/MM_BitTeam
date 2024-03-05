@@ -1,5 +1,4 @@
-from datetime import date, timedelta, time, datetime
-from time import sleep
+from time import sleep, time
 import pandas as pd
 from random import choice, uniform
 from DataBase.path_to_base import TEST_DB, DATABASE
@@ -23,7 +22,6 @@ types = ('limit', 'market')
 
 def main():
 
-
     # Инициализация
     accounts = Accounts(DB)
     # Подключение к Аккаунту
@@ -42,11 +40,20 @@ def main():
         order_amount = round(uniform(5, 200), 6)
         order_side = choice(sides)
         order_type = choice(types)
+        error_message = 'Ордер Создать не удалось. Проверь Подключение к бирже.'
         # Выставляю Ордер
         if order_type == types[0]: # limit
-            connect.create_order(symbol=SYMBOL, side=order_side, type=order_type, amount=order_amount, price=order_price)
+            try:
+                connect.create_order(symbol=SYMBOL, side=order_side, type=order_type, amount=order_amount, price=order_price)
+                print(f"Создан Ордер: {SYMBOL} | {order_side} | {order_type} | {order_amount = } | {order_price = }")
+            except:
+                print(error_message)
         else: # market
-            connect.create_order(symbol=SYMBOL, side=order_side, type=order_type, amount=order_amount)
+            try:
+                connect.create_order(symbol=SYMBOL, side=order_side, type=order_type, amount=order_amount)
+                print(f"Создан Ордер: {SYMBOL} | {order_side} | {order_type} | {order_amount = }")
+            except:
+                print(error_message)
 
         end_time = time()
 
@@ -55,16 +62,16 @@ def main():
         sleep(PAUSE)
         fprint(f'Пауза Завершена. | {get_datetime_now()}')
 
-        match get_bot_state(DB, BOT_NAME), process:
-            case 'Run', True:
-                print('Что-то не так | RUN')
-            case 'Pause', True:
-                fprint(f"Режим PAUSE. | Ордера остались на Бирже. | {get_datetime_now()}")
-            case 'Stop', True:
-                connect.cancel_all_orders()  # Отменяю Ордера
-                fprint(f"Режим STOP. | Ордера ОТМЕНЕНЫ | {get_datetime_now()}")
-            case _, True:
-                print('Проверь Название Режима в БД')
+    match get_bot_state(DB, BOT_NAME), process:
+        case 'Run', True:
+            print('Что-то не так | RUN')
+        case 'Pause', True:
+            fprint(f"Режим PAUSE. | Ордера остались на Бирже. | {get_datetime_now()}")
+        case 'Stop', True:
+            connect.cancel_all_orders()  # Отменяю Ордера
+            fprint(f"Режим STOP. | Ордера ОТМЕНЕНЫ | {get_datetime_now()}")
+        case _, True:
+            print('Проверь Название Режима в БД')
 
 
 if __name__ == '__main__':
