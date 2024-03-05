@@ -246,10 +246,12 @@ class Accounts:
         res_cost = deals['cost'][2]
         # res_price = deals['price'][2]
         message = 'Продано' if res_amount < 0 else 'Куплено'
-        amount_message =  message + f" {base_coin}: {res_amount} | "
+        amount_message =  message + f" {base_coin}: {abs(res_amount)} | "
         message = 'Приобретено' if res_cost < 0 else 'Потрачено'
-        cost_message = message + f" {quote_coin}: {res_cost} | "
-        return amount_message + cost_message
+        cost_message = message + f" {quote_coin}: {abs(res_cost)} | "
+        turnover_amount = deals['amount'][:2].min()
+        turnover_message = f"Полный Оборот {base_coin} (на круг): {turnover_amount}"
+        return amount_message + cost_message + turnover_message
 
 
 

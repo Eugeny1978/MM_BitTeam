@@ -366,7 +366,10 @@ class BitTeam(): # Request
         if len(order):
             order_payloads = self.__form_order_by(order)
             payloads = payloads | order_payloads
-        return self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
+        self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
+        # self.data # Инвертивовать для MAKER side (buy - sell)
+        return self.data
+
 
     def fetch_my_trades_test(self, symbol=0, pairId = 0, limit=10_000, offset=0, order={}, startTime=0, endTime=0): # тестить!
         """
