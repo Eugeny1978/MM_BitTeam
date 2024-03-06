@@ -613,7 +613,7 @@ if __name__ == '__main__':
     # # fetch_my_trades Сделать Сделки и Проверить! где были сделки (жду когда поправят лимиты)
     # # (symbol=0, limit=10_000, offset=0, order='DESC')
     # trades = connect.fetch_my_trades()
-    trades = connect.fetch_my_trades(symbol=SYMBOL_TEST)
+    # trades = connect.fetch_my_trades(symbol=SYMBOL_TEST)
     # trades = connect.fetch_my_trades(limit=5)
     # trades = connect.fetch_my_trades(offset=2)
 
@@ -623,8 +623,8 @@ if __name__ == '__main__':
     # trades = connect.fetch_my_trades(order=order_by)
     # order_by = {'timestamp': 'ASC'} # не сортирует
     # trades = connect.fetch_my_trades(order=order_by)
-    jprint(trades)
-    print(trades['result']['count'])
+    # jprint(trades)
+    # print(trades['result']['count'])
 
 
     # dt1 = 1709116951
