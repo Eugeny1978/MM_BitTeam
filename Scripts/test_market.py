@@ -22,22 +22,29 @@ types = ('limit', 'market')
 
 def main():
 
-    # Инициализация
-    accounts = Accounts(DB)
-    # Подключение к Аккаунту
-    accounts.set_trade_account(ACCOUNT)
-    connect = accounts.exchange
-
     process = False
-    # Основная ПЕТЛЯ
-    while get_bot_state(DB, BOT_NAME):
+
+    if get_bot_state(DB, BOT_NAME) == 'Run':
         process = True
+        # Инициализация
+        accounts = Accounts(DB)
+        # Подключение к Аккаунту
+        accounts.set_trade_account(ACCOUNT)
+        connect = accounts.exchange
+        message = f"Бот '{BOT_NAME}' | Режим RUN Запущен | {get_datetime_now()}"
+    else:
+        message = f"Бот {BOT_NAME} НЕ запущен. Измените Состояние STATE на значение 'Run' | {get_datetime_now()}"
+    fprint(message)
+
+    # Основная ПЕТЛЯ
+    while get_bot_state(DB, BOT_NAME) == 'Run':
+
         start_time = time()
 
         connect.cancel_all_orders() # удаляю существующие лимитки
         # Задаю Параметры Ордера
         order_price = round(uniform(0.95, 1.05), 6)
-        order_amount = round(uniform(5, 200), 6)
+        order_amount = round(uniform(5, 5000), 6)
         order_side = choice(sides)
         order_type = choice(types)
         error_message = 'Ордер Создать не удалось. Проверь Подключение к бирже.'
