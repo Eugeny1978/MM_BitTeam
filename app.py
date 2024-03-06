@@ -90,7 +90,7 @@ with tabs[3]: # Результат Торговли
         st.markdown('RESULTS: (including Fee)')
         st.dataframe(deals_fee.style.pipe(make_style_df), use_container_width=True)
         st.markdown(accounts.get_conclusion(deals_fee))
-        record_db = st.button('Record Results in DataBase',
-              args=(account, trade_symbol, deals, deals_fee, start_date, end_date),
-              use_container_width=True,
-              on_click=record_bd_results)
+    record_db = st.button('Record Results in DataBase',
+        args=(account, trade_symbol, deals, deals_fee, start_date, end_date),
+        use_container_width=True,
+        on_click=record_bd_results)

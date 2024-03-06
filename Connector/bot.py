@@ -209,6 +209,8 @@ class Bot:
         """
         try:
             actual_prices = self.get_actual_prices()
+            print(f"Кол-во Актуальных (свободных) Цен: {len(actual_prices)}")
+            print(f"{actual_prices = }")
         except Exception as error:
             print(error)
             print(f'Не удалось получить Актуальные Цены. Нет соединения с Биржей!')
@@ -233,13 +235,21 @@ class Bot:
         """
         Функция для отмены ВСЕХ ордеров на своем Интервале.
         """
+        # my_orders = self.get_my_orders() ###
+        # for order_id in my_orders['id'].values:
+        #     try:
+        #         self.exchange.cancel_order(id=order_id)
+        #         print(f"Удален Ордер {order_id = }")
+        #     except:
+        #         print(f"Не получилось удалить Ордер {order_id = }")
         my_orders = self.get_my_orders() ###
-        for order_id in my_orders['id'].values:
+        for index, order in my_orders.iterrows():
+            odrer_info = f"ID: {order['id']} | Price: {order['price']}"
             try:
-                self.exchange.cancel_order(id=order_id)
-                print(f"Удален Ордер {order_id = }")
+                self.exchange.cancel_order(id=order['id'])
+                print("Удален Ордер", odrer_info)
             except:
-                print(f"Не получилось удалить Ордер {order_id = }")
+                print("НЕ получилось удалить Ордер", odrer_info)
 
 
 if __name__ == '__main__':
