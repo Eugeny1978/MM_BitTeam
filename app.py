@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 from Interface.accounts import Accounts, make_style_df
 from DataBase.path_to_base import TEST_DB, DATABASE
@@ -5,6 +6,13 @@ from datetime import date, timedelta, time, datetime
 
 
 # В терминале набрать: streamlit run app.py
+
+def record_bd_results(account: str, symbol: str, deals: pd.DataFrame, deals_fee: pd.DataFrame, start_date: date, end_date: date):
+    """
+    account, trade_symbol, deals, deals_fee, start_date, end_date
+    Запись результатов сделок в Базу данных
+    """
+
 
 # ЛОГИКА СТРАНИЦЫ
 
@@ -82,3 +90,7 @@ with tabs[3]: # Результат Торговли
         st.markdown('RESULTS: (including Fee)')
         st.dataframe(deals_fee.style.pipe(make_style_df), use_container_width=True)
         st.markdown(accounts.get_conclusion(deals_fee))
+        record_db = st.button('Record Results in DataBase',
+              args=(account, trade_symbol, deals, deals_fee, start_date, end_date),
+              use_container_width=True,
+              on_click=record_bd_results)

@@ -207,7 +207,12 @@ class Bot:
         """
         Создаю Ордера на уровнях Актуальных Цен
         """
-        actual_prices = self.get_actual_prices()
+        try:
+            actual_prices = self.get_actual_prices()
+        except Exception as error:
+            print(error)
+            print(f'Не удалось получить Актуальные Цены. Нет соединения с Биржей!')
+            actual_prices = []
         for price in actual_prices:
             # При неработающей бирже он пропустит эти Действия НЕ вывалится с ошибкой
             # В след Цикле он должен выявить что по этим ценам не стоит ордеров и снова попытаться выставить ордера.

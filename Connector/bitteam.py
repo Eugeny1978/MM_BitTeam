@@ -337,7 +337,7 @@ class BitTeam(): # Request
                 print(f"__form_order_by(order)| Ключ '{key}' для Сортировки Ордеров НЕ Актуален.")
         return formatted_order
 
-    def fetch_my_trades(self, symbol=0, limit=10_000, offset=0, order={}):
+    def fetch_my_trades(self, symbol=0, limit=1_000_000_000, offset=0, order={}):
         """
         Тесты показали Максимально: Сделки за Последние 3 дня (устанавливал лимит 1000)
         offset=х - смещение: не покажет первые Х сделок
@@ -403,7 +403,7 @@ class BitTeam(): # Request
 
 
 
-    def fetch_my_trades_test(self, symbol=0, pairId = 0, limit=10_000, offset=0, order={}, startTime=0, endTime=0): # тестить!
+    def fetch_my_trades_test(self, symbol=0, pairId = 0, limit=1_000_000_000, offset=0, order={}, startTime=0, endTime=0): # тестить!
         """
         См док на исходном методе
         """
