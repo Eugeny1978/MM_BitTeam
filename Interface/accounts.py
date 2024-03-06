@@ -1,6 +1,7 @@
 import sqlite3 as sq
 import pandas as pd
 from Connector.bitteam import BitTeam
+from datetime import date, datetime
 
 FORMAT_dt = '%Y-%m-%d %H:%M:%S'
 ORDER_COLUMNS = ('id', 'symbol', 'type', 'side', 'price', 'amount', 'cost', 'ramaining', 'datetime')
@@ -222,7 +223,7 @@ class Accounts:
             deals_fee.loc[len(deals_fee)] = (side.upper()+'s', sum_amount, sum_cost, aw_price)
         deals_fee.loc[len(deals_fee)] = self.calc_total_results(deals_fee)
 
-        self.results = deals, deals_fee
+        self.results = dict(deals=deals, deals_fee=deals_fee)
         return self.results
 
     def calc_total_results(self, deals: pd.DataFrame):
@@ -252,6 +253,37 @@ class Accounts:
         turnover_amount = deals['amount'][:2].min()
         turnover_message = f"Полный Оборот {base_coin} (на круг): {turnover_amount}"
         return amount_message + cost_message + turnover_message
+
+    def record_bd_results(self, start_date: date, end_date: date):
+        """
+        self.results = (deals: pd.DataFrame, deals_fee: pd.DataFrame)
+        account, trade_symbol, deals, deals_fee, start_date, end_date
+        Запись результатов сделок в Базу данных
+        """
+        if (not self.trade_account) or (not self.symbol) or (not self.results): return
+
+        with sq.connect(self.database) as connect:
+            curs = connect.cursor()
+            for row, row_fee in zip(self.results['deals'], self.results['deals_fee']):
+                curs.execute(f"INSERT INTO TradeResults * VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                             (
+                                 self.trade_account,
+                                 self.symbol,
+                                 row['side'],
+                                 row['amount'],
+                                 row['cost'],
+                                 row['price'],
+                                 row['fee'],
+                                 row_fee['amount'],
+                                 row_fee['cost'],
+                                 row_fee['price'],
+                                 start_date,
+                                 end_date
+                              ))
+
+
+
+
 
 
 
@@ -298,9 +330,15 @@ if __name__ == '__main__':
     fprint('TRADES:', trades)
 
     # Результаты Торговли
-    deals, deals_fee = accounts.get_trade_results()
-    results = accounts.get_conclusion(deals)
-    results_fee = accounts.get_conclusion(deals_fee)
-    fprint('RESULTS: (excluding Fee)', deals, results, div_line, 'RESULTS: (including Fee)', deals_fee, results_fee)
+    result_deals = accounts.get_trade_results()
+    deals = result_deals['deals']
+    deals_fee = result_deals['deals_fee']
+    conclusion = accounts.get_conclusion(deals)
+    conclusion_fee = accounts.get_conclusion(deals_fee)
+    fprint('RESULTS: (excluding Fee)', deals, conclusion, div_line, 'RESULTS: (including Fee)', deals_fee, conclusion_fee)
+
+    # Запись Результатов Торговли в Базу Данных - Результат работы см мв Базе Данных
+    accounts.record_bd_results(start_date=date(2024-3-4), end_date=date(2024-3-7))
+
 
 

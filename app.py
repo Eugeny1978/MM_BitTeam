@@ -7,11 +7,7 @@ from datetime import date, timedelta, time, datetime
 
 # В терминале набрать: streamlit run app.py
 
-def record_bd_results(account: str, symbol: str, deals: pd.DataFrame, deals_fee: pd.DataFrame, start_date: date, end_date: date):
-    """
-    account, trade_symbol, deals, deals_fee, start_date, end_date
-    Запись результатов сделок в Базу данных
-    """
+
 
 
 # ЛОГИКА СТРАНИЦЫ
@@ -80,7 +76,9 @@ with tabs[2]:
             st.dataframe(trades.style.pipe(make_style_df), use_container_width=True)
 
 with tabs[3]: # Результат Торговли
-    deals, deals_fee = accounts.get_trade_results()
+    results = accounts.get_trade_results()
+    deals = results['deals']
+    deals_fee = results['deals_fee']
     colA3, colB3 = st.columns(2)
     with colA3:
         st.markdown('RESULTS: (excluding Fee)')
@@ -90,7 +88,4 @@ with tabs[3]: # Результат Торговли
         st.markdown('RESULTS: (including Fee)')
         st.dataframe(deals_fee.style.pipe(make_style_df), use_container_width=True)
         st.markdown(accounts.get_conclusion(deals_fee))
-    record_db = st.button('Record Results in DataBase',
-        args=(account, trade_symbol, deals, deals_fee, start_date, end_date),
-        use_container_width=True,
-        on_click=record_bd_results)
+    record_db = st.button('Record Results in DataBase', args=(start_date, end_date), use_container_width=False, on_click=accounts.record_bd_results) #
