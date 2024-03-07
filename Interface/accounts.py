@@ -192,12 +192,15 @@ class Accounts:
         # if trade['side'] == 'sell':
         #     fee = fee  * round(float(trade['price']), 6)
         return fee # уточнить в какой валюте
+
     @staticmethod
     def round_2(number):
         return round(number, 4)
 
-    def get_trade_results(self) -> pd.DataFrame:
-
+    def get_trade_results(self) -> dict:
+        """
+        Возвращает Словарь внутри 2 датафрейма с результатами. Без Учета Коммисий и с учетом
+        """
         deals = pd.DataFrame(columns=RESULTS_COLUMNS)
         for side in ('buy', 'sell'):
             data = self.trades.query(f"side == '{side}'").copy().reset_index(drop=True)[list(RESULTS_COLUMNS)]
@@ -237,7 +240,7 @@ class Accounts:
         return result_row
 
 
-    def get_conclusion(self, deals: pd.DataFrame):
+    def get_conclusion(self, deals: pd.DataFrame) -> str:
         """
         На вход подаю Агрегированнцю таблицу результатов Торговли
         Средняя Цена покупки: {price_delta}' - ????
@@ -261,32 +264,27 @@ class Accounts:
         Запись результатов сделок в Базу данных
         """
         if (not self.trade_account) or (not self.symbol) or (not self.results): return
-
+        # for row, row_fee in zip(self.results['deals'].iterrows(), self.results['deals_fee'].iterrows()):
+        # row[1]['side']
         with sq.connect(self.database) as connect:
             curs = connect.cursor()
-            for row, row_fee in zip(self.results['deals'], self.results['deals_fee']):
-                curs.execute(f"INSERT INTO TradeResults * VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                             (
-                                 self.trade_account,
-                                 self.symbol,
-                                 row['side'],
-                                 row['amount'],
-                                 row['cost'],
-                                 row['price'],
-                                 row['fee'],
-                                 row_fee['amount'],
-                                 row_fee['cost'],
-                                 row_fee['price'],
-                                 start_date,
-                                 end_date
-                              ))
-
-
-
-
-
-
-
+            for (i, row), (i_fee, row_fee) in zip(self.results['deals'].iterrows(), self.results['deals_fee'].iterrows()):
+                curs.execute(f"""INSERT INTO TradeResults
+                (account, symbol, side, amount, cost, price, fee, amount_fee, cost_fee, price_fee, start_date, end_date) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",(
+                    self.trade_account,
+                    self.symbol,
+                    row['side'],
+                    row['amount'],
+                    row['cost'],
+                    row['price'],
+                    row['fee'],
+                    row_fee['amount'],
+                    row_fee['cost'],
+                    row_fee['price'],
+                    start_date,
+                    end_date
+                  ))
 
 
 if __name__ == '__main__':
@@ -338,7 +336,4 @@ if __name__ == '__main__':
     fprint('RESULTS: (excluding Fee)', deals, conclusion, div_line, 'RESULTS: (including Fee)', deals_fee, conclusion_fee)
 
     # Запись Результатов Торговли в Базу Данных - Результат работы см мв Базе Данных
-    accounts.record_bd_results(start_date=date(2024-3-4), end_date=date(2024-3-7))
-
-
-
+    accounts.record_bd_results(start_date=date(2024,3,4), end_date=date(2024,3,7))

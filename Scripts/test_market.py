@@ -23,6 +23,7 @@ types = ('limit', 'market')
 def main():
 
     process = False
+    error_message = 'Проверь Подключение к бирже.'
 
     if get_bot_state(DB, BOT_NAME) == 'Run':
         process = True
@@ -40,14 +41,17 @@ def main():
     while get_bot_state(DB, BOT_NAME) == 'Run':
 
         start_time = time()
-
-        connect.cancel_all_orders() # удаляю существующие лимитки
+        try:
+            connect.cancel_all_orders() # удаляю существующие лимитки
+        except Exception as error:
+            print(error)
+            print(error_message)
         # Задаю Параметры Ордера
         order_price = round(uniform(0.95, 1.05), 6)
         order_amount = round(uniform(5, 5000), 6)
         order_side = choice(sides)
         order_type = choice(types)
-        error_message = 'Ордер Создать не удалось. Проверь Подключение к бирже.'
+
         # Выставляю Ордер
         if order_type == types[0]: # limit
             try:

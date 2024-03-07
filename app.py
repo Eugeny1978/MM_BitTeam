@@ -1,14 +1,11 @@
-import pandas as pd
 import streamlit as st
 from Interface.accounts import Accounts, make_style_df
 from DataBase.path_to_base import TEST_DB, DATABASE
 from datetime import date, timedelta, time, datetime
 
-
 # В терминале набрать: streamlit run app.py
 
-
-
+DB = TEST_DB
 
 # ЛОГИКА СТРАНИЦЫ
 
@@ -19,7 +16,7 @@ col_account, col_symbol = st.columns([5,1])
 
 with col_account:
     # Поле выбора Аккаунта
-    accounts = Accounts(TEST_DB)
+    accounts = Accounts(DB)
     account = st.selectbox('Account:', index=2, options=accounts.acc_names, placeholder="Choose an account name", key='account') # , on_change=
     accounts.set_trade_account(account)
 with col_symbol:
