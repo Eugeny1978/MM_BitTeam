@@ -48,7 +48,7 @@ def main():
             print(error_message)
         # Задаю Параметры Ордера
         order_price = round(uniform(0.95, 1.05), 6)
-        order_amount = round(uniform(5, 5000), 6)
+        order_amount = round(uniform(5, 10000), 6)
         order_side = choice(sides)
         order_type = choice(types)
 

@@ -65,11 +65,12 @@ with tabs[2]:
             # st.write(start_date.ctime())
             # st.write(end_date.ctime())
             # st.write(start_date, type(start_date))
+            # st.write(str(start_date))
             # st.write(end_date)
         with colB2:
             # Таблица Сделок
-            # trades = accounts.get_trades(startTime=start_date, endTime=end_date)
-            trades = accounts.get_trades(symbol=trade_symbol)
+            trades = accounts.get_trades(symbol=trade_symbol, startTime=start_date, endTime=end_date)
+            # trades = accounts.get_trades(symbol=trade_symbol)
             st.dataframe(trades.style.pipe(make_style_df), use_container_width=True)
 
 with tabs[3]: # Результат Торговли

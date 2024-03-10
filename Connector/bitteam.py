@@ -311,7 +311,7 @@ class BitTeam(): # Request
         return self.data
 
     def __form_filter_where(self, where: dict, symbol: str) -> dict:
-        valid_keys = ['price', 'side', 'type']
+        valid_keys = ['price', 'side', 'type', 'amount', 'quantity']
         if not symbol: valid_keys.append('pairId') # если задан символ фильтр по pairId - игнорирую
         formatted_where = {}
         for key, value in where.items():
@@ -419,27 +419,24 @@ class BitTeam(): # Request
             order_payloads = self.__form_order_by(order)
             payloads = payloads | order_payloads
         if startTime:
-            payloads['startTime'] = self.get_timestampz(startTime)
+            payloads['startTime'] = self.get_formatted_datetime(startTime)
         if endTime:
-            payloads['endTime'] = self.get_timestampz(endTime)
+            payloads['endTime'] = self.get_formatted_datetime(endTime)
         self.__request(path=f'/ccxt/tradesOfUser', params=payloads)
         # Инвертивовать для MAKER side (buy - sell) - Изменить в self.data
         self.invert_side_for_maker_in_my_trades()
         return self.data
 
     @staticmethod
-    def get_timestampz(dt: str or int or datetime or date) -> str:
-        form = ("%Y-%m-%dT%H:%M:%S.%f")
+    def get_formatted_datetime(dt: str or int or datetime or date) -> str:
         if isinstance(dt, str):
-            # "2024-02-28T10:39:11.0Z", "2024-02-28T10:39:11.133Z"
+            # '2024-03-05', "2024-02-28T10:39:11.0Z", "2024-02-28T10:39:11.133Z"
             return dt
+        form = ("%Y-%m-%dT%H:%M:%S.%f")
         if isinstance(dt, int):
-            # return dt
             dz = datetime.fromtimestamp(dt, tz=pytz.utc)
-        if isinstance(dt, date):
-            dz = datetime.fromisoformat(str(dt))
-        if isinstance(dt, datetime):
-            dz = dt.astimezone(tz=pytz.utc)
+        if isinstance(dt, date) or isinstance(dt, datetime):
+            dz = dt
         return dz.strftime(form)[:-3] + 'Z'
 
 
@@ -565,6 +562,7 @@ if __name__ == '__main__':
     # my_orders = connect.fetch_orders(order=order_by)
     # jprint(my_orders)
 
+    # ---------------------------------------------------------------------------------------------------
     # # fetch_orders_test !!!!!!!!!!!!!!!!!
     # # (self, symbol='', limit=10_000, type:UserOrderTypes='active', offset=0, order={}, where={})
     # orders = connect.fetch_orders_test()
@@ -586,17 +584,28 @@ if __name__ == '__main__':
     # orders = connect.fetch_orders_test(where=where)
     # where = {'pairId': 2}  #
     # orders = connect.fetch_orders_test(symbol=SYMBOL_TEST, where=where)
+    # where = {'pairId': 2}  #
+    # orders = connect.fetch_orders_test(where=where)
 
     # where = {'side': 'sell'}  #
     # orders = connect.fetch_orders_test(where=where)
     # where = {'side': 'buy'}  #
     # orders = connect.fetch_orders_test(where=where)
 
-    # where = {'price': '> 1.2'}  #
+    # where = {'price': '> 1.04'}  #
     # orders = connect.fetch_orders_test(where=where)
-    # where = {'price': 1}  #
+    # where = {'price': 1.02}  #
     # orders = connect.fetch_orders_test(where=where)
+    # where = {'price': '1.02'}  #
+    # orders = connect.fetch_orders_test(where=where)
+
+    # where = {'quantity': '100'}  #
+    # orders = connect.fetch_orders_test(where=where)
+    # where = {'amount': 100}  #
+    # orders = connect.fetch_orders_test(where=where)
+
     # jprint(orders)
+    # --------------------------------------------------------------------------
 
     # # cancel_order
     # id1 = 275785245 #
@@ -628,7 +637,7 @@ if __name__ == '__main__':
 
 
     # dt1 = 1709116951
-    # dt2 = "2024-02-28T10:39:11.133Z"
+    # dt2 = "2024-03-05T10:39:11.133Z"
     # dt3 = datetime.fromtimestamp(1709116952)
     # dt4 = datetime.now()
     # dt6 = date(2024, 3, 1)
@@ -649,9 +658,13 @@ if __name__ == '__main__':
     # trades = connect.fetch_my_trades_test(limit=5)
     # trades = connect.fetch_my_trades_test(offset=2) #
 
-    # start_date = date(2024, 2, 20)
-    # start_date = 1709116951
-    # start_date = "2024-02-28T10:39:11.133Z"
+
+
+    # start_date = "2024-03-08"
+    # start_date = "2024-03-08T10:39:11.133Z"
+    # start_date = 1709136951
+    # start_date = date(2024, 3, 8)
+    # start_date = datetime(2024, 3, 8, 15, 12, 55)
     # end_date = ''
     # trades = connect.fetch_my_trades_test(startTime=start_date)
     # mprint(trades)

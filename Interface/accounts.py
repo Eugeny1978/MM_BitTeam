@@ -324,7 +324,7 @@ if __name__ == '__main__':
     fprint('BUY Orders', orders.query("side == 'buy'"))
 
     # Таблица Сделок
-    trades = accounts.get_trades(symbol=SYMBOL)
+    trades = accounts.get_trades(symbol=SYMBOL, startTime='2024-03-06', endTime='2024-03-09')
     fprint('TRADES:', trades)
 
     # Результаты Торговли
@@ -336,4 +336,4 @@ if __name__ == '__main__':
     fprint('RESULTS: (excluding Fee)', deals, conclusion, div_line, 'RESULTS: (including Fee)', deals_fee, conclusion_fee)
 
     # Запись Результатов Торговли в Базу Данных - Результат работы см мв Базе Данных
-    accounts.record_bd_results(start_date=date(2024,3,4), end_date=date(2024,3,7))
+    # accounts.record_bd_results(start_date=date(2024,3,4), end_date=date(2024,3,7))
