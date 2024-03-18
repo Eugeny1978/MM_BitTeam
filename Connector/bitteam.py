@@ -400,9 +400,6 @@ class BitTeam(): # Request
                         trade['side'] = 'buy'
         return trades
 
-
-
-
     def fetch_my_trades_test(self, symbol=0, pairId = 0, limit=1_000_000_000, offset=0, order={}, startTime=0, endTime=0): # тестить!
         """
         См док на исходном методе

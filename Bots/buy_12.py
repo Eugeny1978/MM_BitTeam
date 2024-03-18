@@ -10,16 +10,16 @@ pd.options.display.max_rows = 30  # Макс Кол-во Отображаемы�
 
 # PARAMS
 SYMBOL = 'DUSD/USDT'
-VOLUME = 300 # 300
+VOLUME = 240 # 300
 ZERO_PRICE = 1
 MIN_SPRED = 1
 MAX_SPRED = 2
-NUM_ORDERS = 50
+NUM_ORDERS = 20
 SIDE_ORDERS = 'buy' # 'sell' 'buy'
 ACCOUNT = 'TEST_Luchnik' # 'DUSD_1' # 'TEST_Luchnik'
 DB = TEST_DB
 BOT_NAME = 'Buy_12'
-PAUSE = 60
+PAUSE = 30
 
 def main():
 

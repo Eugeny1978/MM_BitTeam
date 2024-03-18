@@ -14,12 +14,12 @@ VOLUME = 500 # 625
 ZERO_PRICE = 1
 MIN_SPRED = 2
 MAX_SPRED = 3
-NUM_ORDERS = 50
+NUM_ORDERS = 40
 SIDE_ORDERS = 'buy' # 'sell' 'buy'
 ACCOUNT = 'TEST_Luchnik' # 'DUSD_1' # 'TEST_Luchnik'
 DB = TEST_DB
 BOT_NAME = 'Buy_23'
-PAUSE = 120
+PAUSE = 60
 
 def main():
 
