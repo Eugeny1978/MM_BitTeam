@@ -108,6 +108,7 @@ class Bot:
 
     def correct_num_orders(self):
         """
+        РАЗОБРАТЬСЯ ИСПРАВИТЬ ОКРУГЛЕНИЕ и тд коррректность!!!
         Корректирую Число Ордеров,
         тк возможны случаи когда можно попытаться мылым объемом зайти на больш количество Ордеров
         """
@@ -115,7 +116,7 @@ class Bot:
             spred = self.min_spred
         else: # 'buy'
             spred = self.max_spred
-        price = self.zero_price * (1 + 0.01 * spred) / self.num_orders
+        price = self.zero_price * (1 + 0.01 * spred) # / self.num_orders
         cost_usdt = (self.volume * price)
         if cost_usdt / self.num_orders < self.steps['limit_usd']:
             self.num_orders = int(cost_usdt / self.steps['limit_usd'])

@@ -660,12 +660,13 @@ if __name__ == '__main__':
 
 
 
-    # start_date = "2024-03-08"
+    start_date = "2024-03-18"
     # start_date = "2024-03-08T10:39:11.133Z"
     # start_date = 1709136951
     # start_date = date(2024, 3, 8)
     # start_date = datetime(2024, 3, 8, 15, 12, 55)
-    # end_date = ''
-    # trades = connect.fetch_my_trades_test(startTime=start_date)
+    end_date = '2024-03-19'
+    trades = connect.fetch_my_trades_test(startTime=start_date, endTime=end_date, limit=10)
     # mprint(trades)
+    jprint(trades)
 
