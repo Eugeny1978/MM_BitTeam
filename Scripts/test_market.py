@@ -13,7 +13,7 @@ pd.options.display.max_rows = 30  # Макс Кол-во Отображаемы�
 
 DB = TEST_DB
 SYMBOL = 'DUSD/USDT'
-ACCOUNT =  'DUSD_2' # 'TEST_Korolev'
+ACCOUNT =  'TEST_Korolev' # 'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
 PAUSE = 100
 
