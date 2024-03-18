@@ -13,7 +13,7 @@ pd.options.display.max_rows = 30  # Макс Кол-во Отображаемы�
 
 DB = TEST_DB
 SYMBOL = 'DUSD/USDT'
-ACCOUNT = 'TEST_Korolev'
+ACCOUNT =  'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
 PAUSE = 100
 
@@ -47,8 +47,8 @@ def main():
             print(error)
             print(error_message)
         # Задаю Параметры Ордера
-        order_price = round(uniform(0.95, 1.05), 6)
-        order_amount = round(uniform(5, 10000), 6)
+        order_price = round(uniform(0.95, 1.05), 6) # Интервал Цена Ордера
+        order_amount = round(uniform(5, 8000), 6) # Интервал Размер Ордера
         order_side = choice(sides)
         order_type = choice(types)
 
