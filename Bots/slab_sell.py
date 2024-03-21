@@ -18,7 +18,7 @@ NUM_ORDERS = 200
 SIDE_ORDERS = 'sell' # 'sell' 'buy'
 ACCOUNT = 'TEST_Korolev' # 'DUSD_2' #
 DB = DATABASE
-BOT_NAME = 'Sell_Slab'
+BOT_NAME = 'Slab_Sell'
 PAUSE = 60*5 # 5 min
 SLAB = True
 
