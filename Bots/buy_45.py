@@ -2,7 +2,7 @@ import pandas as pd
 from time import time, sleep
 from Connector.bot import Bot, get_bot_state
 from Connector.logs import jprint, fprint, get_datetime_now, get_time_now
-from DataBase.path_to_base import TEST_DB
+from DataBase.path_to_base import DATABASE
 
 pd.options.display.width = None  # Отображение Таблицы на весь Экран
 pd.options.display.max_columns = 20  # Макс Кол-во Отображаемых Колонок
@@ -17,7 +17,7 @@ MAX_SPRED = 5
 NUM_ORDERS = 50
 SIDE_ORDERS = 'buy' # 'sell' 'buy'
 ACCOUNT = 'TEST_Luchnik' # 'DUSD_1' # 'TEST_Luchnik'
-DB = TEST_DB
+DB = DATABASE
 BOT_NAME = 'Buy_45'
 PAUSE = 120
 

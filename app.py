@@ -58,20 +58,18 @@ with tabs[2]:
         with colA2:
             submitted = st.form_submit_button("Get Trades")
             today = date.today()
-            default_date = today - timedelta(days=1) # weeks=1
+            default_date = today # - timedelta(days=1) # weeks=1
             start_date = st.date_input('from:', value=default_date, max_value=today) # format="YYYY.MM.DD" / 00:00 время
             end_date = st.date_input('to:', max_value=today) + timedelta(days=1) # добавляю сутки
             # t = st.time_input('Time:', value="now", step=timedelta(minutes=5)) # int = secundes = 900 = 15 minutes
-            # st.write(start_date.ctime())
-            # st.write(end_date.ctime())
-            # st.write(start_date, type(start_date))
-            # st.write(str(start_date))
-            # st.write(end_date)
         with colB2:
             # Таблица Сделок
             trades = accounts.get_trades(symbol=trade_symbol, startTime=start_date, endTime=end_date)
             # trades = accounts.get_trades(symbol=trade_symbol)
-            st.dataframe(trades.style.pipe(make_style_df), use_container_width=True)
+            # Исключение StreamlitAPIException: Фрейм данных содержит 344220 ячеек, но максимальное количество ячеек,
+            # разрешенное для рендеринга Pandas Styler, настроено на 262144. Чтобы разрешить стилизацию большего количества ячеек,
+            # вы можете изменить конфигурацию "style.render.max_elements". Например: pd.set_option("styler.render.max_elements", 344220)
+            st.dataframe(trades, use_container_width=True) # .style.pipe(make_style_df)
 
 with tabs[3]: # Результат Торговли
     results = accounts.get_trade_results()

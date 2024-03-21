@@ -18,7 +18,7 @@ def get_bot_state(database, bot_name):
 
 class Bot:
 
-    def __init__(self, symbol, volume, zero_price, min_spred, max_spred, num_orders, side_orders, account, database, bot_name):
+    def __init__(self, symbol, volume, zero_price, min_spred, max_spred, num_orders, side_orders, account, database, bot_name, slab=False):
         """
         symbol: "baseCOIN/quoteCOIN" Торгуемая Пара
         volume: Общий объем Средств (в базовой Валюте ?)
@@ -53,6 +53,7 @@ class Bot:
         self.prices: list = self.get_prices()
         self.amounts: float = self.get_amounts()
         self.bot_name: str = bot_name
+        self.slab = slab
 
     @staticmethod
     def is_test_trade_mode(mode: str) -> bool:
@@ -65,6 +66,8 @@ class Bot:
         return round(volume, self.steps['baseStep'])
 
     def get_random_amount(self):
+        if self.slab:
+            return self.amounts
         return self.round_amount(uniform(0.8, 1.2) * self.amounts)
 
     def get_data_from_db(self):

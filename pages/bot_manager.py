@@ -67,7 +67,7 @@ bot_names = get_bot_names()
 columns = st.columns(len(bot_names))
 buttons = []
 for bot, column in zip(bot_names, columns):
-    name = 'Bot_' + bot
+    name = bot.upper()
     with column:
         button = column.radio(name, options=RADIO_OPTIONS, index=get_index_state(bot), key=bot)
     buttons.append(button)
