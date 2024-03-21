@@ -58,7 +58,7 @@ with tabs[2]:
         with colA2:
             submitted = st.form_submit_button("Get Trades")
             today = date.today()
-            default_date = today - timedelta(days=7) # weeks=1
+            default_date = today - timedelta(days=1) # weeks=1
             start_date = st.date_input('from:', value=default_date, max_value=today) # format="YYYY.MM.DD" / 00:00 время
             end_date = st.date_input('to:', max_value=today) + timedelta(days=1) # добавляю сутки
             # t = st.time_input('Time:', value="now", step=timedelta(minutes=5)) # int = secundes = 900 = 15 minutes

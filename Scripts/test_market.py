@@ -15,7 +15,7 @@ DB = TEST_DB
 SYMBOL = 'DUSD/USDT'
 ACCOUNT =  'TEST_Korolev' # 'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
-PAUSE = 55
+PAUSE = 100
 
 sides = ('buy', 'sell')
 types = ('limit', 'market')
@@ -48,7 +48,7 @@ def main():
             print(error_message)
         # Задаю Параметры Ордера
         order_price = round(uniform(0.95, 1.05), 6) # Интервал Цена Ордера
-        order_amount = round(uniform(5, 8000), 6) # Интервал Размер Ордера
+        order_amount = round(uniform(5, 12000), 6) # Интервал Размер Ордера
         order_side = choice(sides)
         order_type = choice(types)
 

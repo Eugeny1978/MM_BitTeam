@@ -20,7 +20,7 @@ class BitTeam(): # Request
     /ccxt - приватные методы
     /cmc - публичные методы
     """
-    base_url = 'https://bit.team/trade/api' # 'https://bit.team/trade/api' 'https://dkr.bit.team/trade/api'
+    base_url = 'https://dkr.bit.team/trade/api' # 'https://bit.team/trade/api' 'https://dkr.bit.team/trade/api'
     status = None           # Статус-код последнего запроса 200 - если ок
     data = None             # Данные последнего запроса
     auth = None
@@ -153,6 +153,14 @@ class BitTeam(): # Request
         """
         return self.__request(path='/pairs')
 
+    def info_tikers_precisions(self):
+        """
+        Шаг Цен и Объемов по ВСЕМ Торгуемым на Бирже Парам.
+        Похоже что это актуальная информация
+        Не хватает инфы по минимальному Объему (может быть он константа?)
+        """
+        return self.__request(path=f'/pairs/precisions')
+
     def info_tickers_cmc(self):
         """
         Информация по ВСЕМ Торгуемым на Бирже Парам за 24 часа.
@@ -167,6 +175,8 @@ class BitTeam(): # Request
         Последняя Цена и Суточные Объемы
         """
         return self.__request(path=f'/cmc/ticker')
+
+
 
     def info_coins(self):
         """
@@ -655,15 +665,18 @@ if __name__ == '__main__':
     # trades = connect.fetch_my_trades_test(limit=5)
     # trades = connect.fetch_my_trades_test(offset=2) #
 
-
-
-    start_date = "2024-03-18"
+    # start_date = "2024-03-18"
     # start_date = "2024-03-08T10:39:11.133Z"
     # start_date = 1709136951
     # start_date = date(2024, 3, 8)
     # start_date = datetime(2024, 3, 8, 15, 12, 55)
-    end_date = '2024-03-19'
-    trades = connect.fetch_my_trades_test(startTime=start_date, endTime=end_date, limit=10)
+    # end_date = '2024-03-19'
+    # trades = connect.fetch_my_trades_test(startTime=start_date, endTime=end_date, limit=10)
     # mprint(trades)
-    jprint(trades)
+    # jprint(trades)
+
+    pairs = connect.info_tickers()
+    # pairs_precisions = connect.info_tikers_precisions()
+    jprint(pairs)
+    # jprint(pairs_precisions)
 
