@@ -1,0 +1,259 @@
+{
+  "ok": true,
+  "result": {
+    "pairs": {
+      "eth_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 10,
+          "symbol": "eth",
+          "decimals": 18
+        }
+      },
+      "eth_btc": {
+        "price": {
+          "id": 14,
+          "symbol": "btc",
+          "decimals": 8
+        },
+        "amount": {
+          "id": 10,
+          "symbol": "eth",
+          "decimals": 18
+        }
+      },
+      "eth_tdel": {
+        "price": {
+          "id": 9,
+          "symbol": "tdel",
+          "decimals": 18
+        },
+        "amount": {
+          "id": 10,
+          "symbol": "eth",
+          "decimals": 18
+        }
+      },
+      "btc_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 14,
+          "symbol": "btc",
+          "decimals": 8
+        }
+      },
+      "btc_tdel": {
+        "price": {
+          "id": 9,
+          "symbol": "tdel",
+          "decimals": 18
+        },
+        "amount": {
+          "id": 14,
+          "symbol": "btc",
+          "decimals": 8
+        }
+      },
+      "tdel_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 9,
+          "symbol": "tdel",
+          "decimals": 18
+        }
+      },
+      "pzm_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 15,
+          "symbol": "pzm",
+          "decimals": 2
+        }
+      },
+      "pzm_tdel": {
+        "price": {
+          "id": 9,
+          "symbol": "tdel",
+          "decimals": 18
+        },
+        "amount": {
+          "id": 15,
+          "symbol": "pzm",
+          "decimals": 2
+        }
+      },
+      "trx_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 17,
+          "symbol": "trx",
+          "decimals": 6
+        }
+      },
+      "bnb_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 18,
+          "symbol": "bnb",
+          "decimals": 18
+        }
+      },
+      "btt_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 13,
+          "symbol": "btt",
+          "decimals": 18
+        }
+      },
+      "btt_tdel": {
+        "price": {
+          "id": 9,
+          "symbol": "tdel",
+          "decimals": 18
+        },
+        "amount": {
+          "id": 13,
+          "symbol": "btt",
+          "decimals": 18
+        }
+      },
+      "busd_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 2,
+          "symbol": "busd",
+          "decimals": 8
+        }
+      },
+      "btc_busd": {
+        "price": {
+          "id": 2,
+          "symbol": "busd",
+          "decimals": 8
+        },
+        "amount": {
+          "id": 14,
+          "symbol": "btc",
+          "decimals": 8
+        }
+      },
+      "uf2o_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 26,
+          "symbol": "uf2o",
+          "decimals": 8
+        }
+      },
+      "floki_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 27,
+          "symbol": "floki",
+          "decimals": 9
+        }
+      },
+      "eggman_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 28,
+          "symbol": "eggman",
+          "decimals": 9
+        }
+      },
+      "eth_rub": {
+        "price": {
+          "id": 29,
+          "symbol": "rub",
+          "decimals": 4
+        },
+        "amount": {
+          "id": 10,
+          "symbol": "eth",
+          "decimals": 18
+        }
+      },
+      "tdel_rub": {
+        "price": {
+          "id": 29,
+          "symbol": "rub",
+          "decimals": 4
+        },
+        "amount": {
+          "id": 9,
+          "symbol": "tdel",
+          "decimals": 18
+        }
+      },
+      "rub_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 29,
+          "symbol": "rub",
+          "decimals": 4
+        }
+      },
+      "dusd_usdt": {
+        "price": {
+          "id": 12,
+          "symbol": "usdt",
+          "decimals": 6
+        },
+        "amount": {
+          "id": 32,
+          "symbol": "dusd",
+          "decimals": 8
+        }
+      }
+    }
+  }
+}
