@@ -12,14 +12,14 @@ pd.options.display.max_rows = 30  # Макс Кол-во Отображаемы�
 SYMBOL = 'DUSD/USDT'
 VOLUME = 39800
 ZERO_PRICE = 1
-MIN_SPRED = 2
-MAX_SPRED = 6
+MIN_SPRED = 4
+MAX_SPRED = 10
 NUM_ORDERS = 200
 SIDE_ORDERS = 'sell' # 'sell' 'buy'
 ACCOUNT = 'TEST_Korolev' # 'DUSD_2' #
 DB = DATABASE
 BOT_NAME = 'Slab_Sell'
-PAUSE = 60*5 # 5 min
+PAUSE = 60*3 # minutes
 SLAB = True
 
 def main():

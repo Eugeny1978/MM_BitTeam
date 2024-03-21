@@ -1,24 +1,24 @@
 import streamlit as st
 import sqlite3 as sq
 from datetime import datetime
-from DataBase.path_to_base import TEST_DB
+from DataBase.path_to_base import DATABASE
 from Interface.accounts import Accounts
 
 # В терминале набрать: streamlit run app.py
 
-DATABASE = TEST_DB
+DB = DATABASE
 RADIO_OPTIONS: tuple = ('Run', 'Pause', 'Stop')
 FORMAT_dt = '%Y-%m-%d %H:%M:%S'
 SYMBOL = 'DUSD/USDT'
 
 def get_bot_names():
-    with sq.connect(DATABASE) as connect:
+    with sq.connect(DB) as connect:
         curs = connect.cursor()
         curs.execute(f"SELECT name FROM Bots")
         return [row[0] for row in curs]
 
 def get_index_state(bot_name):
-    with sq.connect(DATABASE) as connect:
+    with sq.connect(DB) as connect:
         curs = connect.cursor()
         curs.execute(f"SELECT state FROM Bots WHERE name IS '{bot_name}'")
         responce = curs.fetchone()[0]
@@ -26,7 +26,7 @@ def get_index_state(bot_name):
         return RADIO_OPTIONS.index(responce)
 
 def update_bot_states(bots, states):
-    with sq.connect(DATABASE) as connect:
+    with sq.connect(DB) as connect:
         curs = connect.cursor()
         for bot, state in zip(bots, states):
             if state == None: state = 'Stop'
@@ -36,7 +36,7 @@ def set_states_all_bots(bots, state):
     # Цикл необходим тк иначе последнее изменение не отрабатывает Если менялось 1 раз
     for key in bots:
         st.session_state[key] = state
-    with sq.connect(DATABASE) as connect:
+    with sq.connect(DB) as connect:
         curs = connect.cursor()
         for bot in bots:
             curs.execute(f"UPDATE Bots SET state = '{state}' WHERE name IS '{bot}'")
@@ -82,7 +82,7 @@ with colC:
     stop_button = st.button('All Bots STOP', args=(bot_names, RADIO_OPTIONS[2]), use_container_width=True, on_click=set_states_all_bots)
 with colD:
     # Поле выбора Аккаунта
-    accounts = Accounts(TEST_DB)
+    accounts = Accounts(DB)
     account = st.selectbox('Account:', index=5, options=accounts.acc_names, placeholder="Choose an account name", key='account')  # 5 -> 'TEST_Lychnik'
     st.markdown('Перед Нажатием Остановите Всех Ботов!')
     del_all_orders = st.button('Quickly DELETE all Orders', use_container_width=True)
