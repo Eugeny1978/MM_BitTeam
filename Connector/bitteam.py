@@ -4,12 +4,11 @@ from typing import Literal                      # Создание Классо�
 from datetime import datetime, timedelta, date
 import pytz
 
-
-
 # Допустимый Формат Написания Торговых Пар (Символов)
 # symbol='del_usdt' - родной
 # symbol='DEL/USDT' - Унификация с ccxt. Преобразуется в del_usdt
 
+Mode = Literal['Spot', 'Test_Spot']
 OrderSide = Literal['buy', 'sell']
 OrderType = Literal['limit', 'market']
 UserOrderTypes = Literal['history', 'active', 'closed', 'cancelled', 'all'] # history = closed + cancelled
@@ -20,7 +19,6 @@ class BitTeam(): # Request
     /ccxt - приватные методы
     /cmc - публичные методы
     """
-    base_url = 'https://dkr.bit.team/trade/api' # 'https://bit.team/trade/api' 'https://dkr.bit.team/trade/api'
     status = None           # Статус-код последнего запроса 200 - если ок
     data = None             # Данные последнего запроса
     auth = None
@@ -29,17 +27,32 @@ class BitTeam(): # Request
     def __str__(self):
         return self.__name__
 
-    def __init__(self, account={'apiKey': None, 'secret': None}, ):
+    def __init__(self, account={'apiKey': None, 'secret': None}, mode:Mode='Spot'):
         self.account: dict = account
-        self.load_markets() # self.markets =
+        self.mode = mode
+        self.set_mode()
 
-    def set_test_mode(self, mode: bool):
-        if not mode:
-            self.base_url = 'https://bit.team/trade/api'
-        else:
-            # self.base_url = 'https://dkr3.bit.team/trade/api'
-            self.base_url = 'https://dkr.bit.team/trade/api'
+
+
+    def set_mode(self):
+        match self.mode:
+            case 'Spot':
+                base_url = 'https://bit.team/trade/api'
+            case 'Test_Spot':
+                base_url = 'https://dkr.bit.team/trade/api'
+            case _:
+                base_url = 'https://bit.team/trade/api'
+                print('Не задан Торговый Режим. Установлено значение по умолчанию SPOT')
+        self.base_url = base_url
         self.load_markets()
+
+    # def set_test_mode(self, mode: bool):
+    #     if not mode:
+    #         self.base_url = 'https://bit.team/trade/api'
+    #     else:
+    #         # self.base_url = 'https://dkr3.bit.team/trade/api'
+    #         self.base_url = 'https://dkr.bit.team/trade/api'
+    #     self.load_markets()
 
     @staticmethod
     def format_symbol(symbol: str) -> str:
@@ -453,10 +466,11 @@ class BitTeam(): # Request
 
 if __name__ == '__main__':
 
-    from DataBase.path_to_base import TEST_DB
+    from DataBase.path_to_base import DATABASE #, TEST_DB
     import json
 
     div_line = '-' * 120
+    DB = DATABASE
     SYMBOL = 'ETH/USDT'
     SYMBOL_TEST = 'DUSD/USDT'
 
@@ -465,9 +479,6 @@ if __name__ == '__main__':
 
     def mprint(*args):
         print(*args, div_line, sep='\n')
-
-    def is_test_trade_mode(mode: str) -> bool:
-        return True if mode == 'Test' else False
 
     def get_data_from_db(account, database):
         """
@@ -479,16 +490,21 @@ if __name__ == '__main__':
                 curs = connect.cursor()
                 curs.execute(f"SELECT apiKey, secret, mode FROM Accounts WHERE name IS '{account}'")
                 responce = curs.fetchone()
-                return dict(apiKey=responce[0], secret=responce[1]), is_test_trade_mode(responce[2])
+                return dict(apiKey=responce[0], secret=responce[1]), responce[2]
         except Exception as error:
             print('Нет Доступа к базе | Проверь также имя Аккаунта.')
             raise (error)
 
     acc_name = 'Constantin'
-    acc_name__test = 'TEST_Luchnik'
+    acc_name_test = 'TEST_Luchnik'
+    MODE = 'Spot'
+    MODE_TEST = 'Test_Spot'
 
     # # Инициализация
-    connect = BitTeam()
+    # connect = BitTeam()
+    # connect = BitTeam(mode=MODE)
+    # connect = BitTeam(mode=MODE_TEST)
+    # print(connect)
 
     # # ПУБЛИЧНЫЕ ЗАПРОСЫ ------------------
 
@@ -499,6 +515,7 @@ if __name__ == '__main__':
     # # order_book
     # jprint(connect.fetch_order_book())
     # jprint(connect.fetch_order_book(SYMBOL))
+    # jprint(connect.fetch_order_book(SYMBOL_TEST))
     # jprint(connect.fetch_order_book_cmc())
     # jprint(connect.fetch_order_book_cmc(SYMBOL))
 
@@ -519,20 +536,21 @@ if __name__ == '__main__':
     # # ПРИВАТНЫЕ ЗАПРОСЫ ------------------
 
     # # Данные по Аккаунту из Базы Данных
-    # acc_keys, acc_mode = get_data_from_db(acc_name, TEST_DB)
-    acc_keys, acc_mode = get_data_from_db(acc_name__test, TEST_DB)
-
+    # acc_keys, acc_mode = get_data_from_db(acc_name, DB)
+    acc_keys, acc_mode = get_data_from_db(acc_name_test, DB)
     # mprint(acc_keys, acc_mode)
 
     # # Варианты Авторизации
     # # Авторизация Сразу при Инициализации:
-    # connect = BitTeam(acc_keys)
+    # connect = BitTeam(acc_keys, acc_mode)
     # # Если ранее соединение было и теперь необходимо только авторизация
+    connect = BitTeam(mode=acc_mode) # Spot режим - по умолчанию
     connect.account = acc_keys
+    print(connect)
 
     # Если Работаем на Тестовом Сервере (Включаем - Тестовый Режим - Меняется отсновной URL)
     # Для Реальной Торговли не обязательно. Тк по умолчанию запросы уходят туда.
-    connect.set_test_mode(acc_mode)
+    # connect.set_test_mode(acc_mode)
 
     # # Должны обновиться markets (тк для разных режимов есть отличия)
     # jprint(connect.markets)
@@ -675,8 +693,8 @@ if __name__ == '__main__':
     # mprint(trades)
     # jprint(trades)
 
-    pairs = connect.info_tickers()
+    # pairs = connect.info_tickers()
     # pairs_precisions = connect.info_tikers_precisions()
-    jprint(pairs)
+    # jprint(pairs)
     # jprint(pairs_precisions)
 

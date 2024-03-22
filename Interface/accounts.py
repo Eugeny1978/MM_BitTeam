@@ -71,24 +71,34 @@ class Accounts:
         if account:
             self.trade_account = account
             self.trade_keys = self.data[account]
-            self.test_mode = is_test_trade_mode(self.data[account]['mode'])
+            self.mode = self.data[account]['mode']
             self.exchange = self.connect_exchange()
 
-    def connect_exchange(self):
+    def validate_mode_exchange(self):
+        connects = []
         try:
-            exchange = BitTeam()
-        except Exception as error:
-            print('Биржа НЕдоступна')
-            raise (error)
+            exchange1 = BitTeam()
+            connects.append(exchange1)
+        except:
+            print('BitTeam Биржа | Режим SPOT НЕдоступен')
+        try:
+            exchange2 = BitTeam(mode='Test_Spot')
+            connects.append(exchange2)
+        except:
+            print('BitTeam Биржа | Режим TEST SPOT НЕдоступен')
+        if connects:
+            return connects[0]
+        else:
+            raise ('BitTeam Биржа | Режим TEST и SPOT НЕдоступны')
+
+
+    def connect_exchange(self):
+        exchange = self.validate_mode_exchange()
         if self.trade_account:
             try:
-                if self.test_mode:
-                    exchange.set_test_mode(self.test_mode)
-                    exchange.load_markets()
-                exchange.account = self.trade_keys
-                # для проверки ключей, возможно, нужен любой запрос
+                exchange = BitTeam(account=self.trade_keys, mode=self.mode)
             except Exception as error:
-                print('API Ключи НЕдействительны')
+                print('Проверь: Работает ли BitTeam в этом режиме | действительны ли API Ключи')
                 raise (error)
         return exchange
 
@@ -191,7 +201,7 @@ class Accounts:
         fee = float(type_fee['amount'])
         # if trade['side'] == 'sell':
         #     fee = fee  * round(float(trade['price']), 6)
-        return fee # уточнить в какой валюте
+        return fee # уточнить в какой валюте скорее всего в той что отдаем
 
     @staticmethod
     def round_2(number):
@@ -232,11 +242,10 @@ class Accounts:
     def __calc_aw_price(self, sum_cost, sum_amount):
         return round((sum_cost / sum_amount), 6) if sum_amount else 0
 
-
     def calc_total_results(self, deals: pd.DataFrame):
         delta_amount = self.round_2(deals['amount'][0] - deals['amount'][1])
         delta_cost = self.round_2(deals['cost'][0] - deals['cost'][1])
-        delta_price = round(delta_cost / delta_amount, 6)
+        delta_price = round(delta_cost / delta_amount, 6) if delta_amount else 0
         if 'fee' in deals.columns:
             result_row = ('RESULTs', delta_amount, delta_cost, '', delta_price)
         else:
@@ -293,14 +302,14 @@ class Accounts:
 if __name__ == '__main__':
 
     from Connector.logs import fprint
-    from DataBase.path_to_base import TEST_DB
+    from DataBase.path_to_base import DATABASE
 
     div_line = '-' * 120
     pd.options.display.width = None  # Отображение Таблицы на весь Экран
     pd.options.display.max_columns = 20  # Макс Кол-во Отображаемых Колонок
     pd.options.display.max_rows = 30  # Макс Кол-во Отображаемых Cтрок
 
-    DB = TEST_DB
+    DB = DATABASE
     SYMBOL = 'DUSD/USDT'
     ACCOUNT = 'TEST_Luchnik'
 

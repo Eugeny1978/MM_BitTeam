@@ -46,7 +46,7 @@ class Bot:
         self.side_orders: SideType = side_orders
         self.account: str = account
         self.database: str = database
-        self.apikeys, self.test_mode = self.get_data_from_db() # dict, bool
+        self.apikeys, self.mode = self.get_data_from_db() # dict, bool
         self.exchange: BitTeam = self.connect_exchange() # dict , self.steps
         self.steps: dict = self.get_steps()
         self.correct_num_orders()
@@ -54,10 +54,6 @@ class Bot:
         self.amounts: float = self.get_amounts()
         self.bot_name: str = bot_name
         self.slab = slab
-
-    @staticmethod
-    def is_test_trade_mode(mode: str) -> bool:
-        return True if mode == 'Test' else False
 
     def round_price(self, price):
         return round(price, self.steps['priceStep'])
@@ -80,7 +76,7 @@ class Bot:
                 curs = connect.cursor()
                 curs.execute(f"SELECT apiKey, secret, mode FROM Accounts WHERE name IS '{self.account}'")
                 responce = curs.fetchone()
-                return dict(apiKey=responce[0], secret=responce[1]), self.is_test_trade_mode(responce[2])
+                return dict(apiKey=responce[0], secret=responce[1]), responce[2]
         except Exception as error:
             print('Нет Доступа к базе | Проверь также имя Аккаунта.')
             raise (error)
@@ -90,10 +86,7 @@ class Bot:
         Соединение с Биржей. Учитывается режим торговли Реальный или Тестовый
         """
         try:
-            exchange = BitTeam()
-            if self.test_mode:
-                exchange.set_test_mode(self.test_mode)  # перейти в режим тестовой торговли
-                exchange.load_markets()                 # обновить инфо по тикерам
+            exchange = BitTeam(mode=self.mode)
         except Exception as error:
             print('Биржа НЕдоступна')
             raise (error)
@@ -258,8 +251,9 @@ class Bot:
 
 if __name__ == '__main__':
 
-    from DataBase.path_to_base import TEST_DB
+    from DataBase.path_to_base import DATABASE
     import json
+    from pprint import pprint
     # from time import time
 
     div_line = '-' * 120
@@ -276,32 +270,33 @@ if __name__ == '__main__':
     NUM_ORDERS = 10
     SIDE_ORDERS = 'sell' # 'sell' 'buy'
     ACCOUNT = 'TEST_Luchnik'
-    DB = TEST_DB
+    DB = DATABASE
     BOT_NAME = '1_procent'
 
     def jprint(data):
         print(json.dumps(data), div_line, sep='\n')
 
-    def mprint(*args):
+    def dprint(*args):
         print(*args, div_line, sep='\n')
 
 
     bot = Bot(SYMBOL, VOLUME, ZERO_PRICE, MIN_SPRED, MAX_SPRED, NUM_ORDERS, SIDE_ORDERS, ACCOUNT, DB, BOT_NAME)
-    # print(bot.__dict__)
+    pprint(bot.__dict__)
     # bot.exchange.cancel_all_orders()
 
-    check_prices = bot.get_actual_orderbook_prices()
-    actual_prices = bot.get_actual_prices()
-    mprint()
-    mprint(bot.prices)
-    mprint(check_prices)
-    mprint(actual_prices)
-    # mprint(bot.exchange.markets)
-    # mprint(bot.steps)
-
-    # bot.set_orders()
+    # check_prices = bot.get_actual_orderbook_prices()
+    # actual_prices = bot.get_actual_prices()
+    # dprint()
+    # dprint(bot.prices)
+    # dprint(check_prices)
+    # dprint(actual_prices)
+    # # dprint(bot.exchange.markets)
+    # # dprint(bot.steps)
     #
-    my_orders = bot.get_my_orders()
-    mprint(my_orders)
-    bot.delete_all_orders()
+    # # bot.set_orders()
+    # #
+    # my_orders = bot.get_my_orders()
+    # dprint(my_orders)
+    # bot.delete_all_orders()
 
+    # bot.exchange
