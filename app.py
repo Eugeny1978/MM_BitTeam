@@ -5,7 +5,7 @@ from datetime import date, timedelta, time, datetime
 
 # В терминале набрать: streamlit run app.py
 
-DB = TEST_DB
+DB =  DATABASE
 
 # ЛОГИКА СТРАНИЦЫ
 
