@@ -250,7 +250,6 @@ class Accounts:
         На вход подаю Агрегированнцю таблицу результатов Торговли
         Средняя Цена покупки: {price_delta}' - ????
         """
-        print(self.symbol)
         base_coin, quote_coin = self.symbol.upper().split('/')
         res_amount = deals['amount'][2]
         res_cost = deals['cost'][2]
