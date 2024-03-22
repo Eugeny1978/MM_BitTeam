@@ -154,8 +154,8 @@ class Accounts:
         return self.orders
 
     def get_trades(self, symbol='', startTime=0, endTime=0):
-        df = pd.DataFrame(columns=TRADES_COLUMNS)
         self.symbol = symbol
+        df = pd.DataFrame(columns=TRADES_COLUMNS)
         if not self.trade_account:
             self.trades = df
             return self.trades
@@ -179,7 +179,6 @@ class Accounts:
                 self.get_fee(trade),
                 format_datetime(trade['updatedAt']) # поменять на преобразованное значение поля 'timestamp'
             )
-        # self.symbol = symbol
         self.trades = df
         return self.trades
 
@@ -243,7 +242,6 @@ class Accounts:
         else:
             result_row = ('RESULTs', delta_amount, delta_cost, delta_price)
         return result_row
-
 
     def get_conclusion(self, deals: pd.DataFrame) -> str:
         """
