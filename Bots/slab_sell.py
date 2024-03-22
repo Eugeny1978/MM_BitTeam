@@ -19,7 +19,7 @@ SIDE_ORDERS = 'sell' # 'sell' 'buy'
 ACCOUNT = 'TEST_Korolev' # 'DUSD_2' #
 DB = DATABASE
 BOT_NAME = 'Slab_Sell'
-PAUSE = 60*3 # minutes
+PAUSE = 60*2 # minutes
 SLAB = True
 
 def main():

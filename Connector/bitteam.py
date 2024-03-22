@@ -20,7 +20,7 @@ class BitTeam(): # Request
     /ccxt - приватные методы
     /cmc - публичные методы
     """
-    base_url = 'https://bit.team/trade/api' # 'https://bit.team/trade/api' 'https://dkr.bit.team/trade/api'
+    base_url = 'https://dkr.bit.team/trade/api' # 'https://bit.team/trade/api' 'https://dkr.bit.team/trade/api'
     status = None           # Статус-код последнего запроса 200 - если ок
     data = None             # Данные последнего запроса
     auth = None

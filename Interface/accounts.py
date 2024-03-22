@@ -155,6 +155,7 @@ class Accounts:
 
     def get_trades(self, symbol='', startTime=0, endTime=0):
         df = pd.DataFrame(columns=TRADES_COLUMNS)
+        self.symbol = symbol
         if not self.trade_account:
             self.trades = df
             return self.trades
@@ -178,7 +179,7 @@ class Accounts:
                 self.get_fee(trade),
                 format_datetime(trade['updatedAt']) # поменять на преобразованное значение поля 'timestamp'
             )
-        self.symbol = symbol
+        # self.symbol = symbol
         self.trades = df
         return self.trades
 
@@ -207,7 +208,7 @@ class Accounts:
             sum_amount = self.round_2(data['amount'].sum())
             sum_cost = self.round_2(data['cost'].sum())
             sum_fee = self.round_2(data['fee'].sum())
-            aw_price = round((sum_cost / sum_amount), 6)
+            aw_price = self.__calc_aw_price(sum_cost, sum_amount) # round((sum_cost / sum_amount), 6)
             deals.loc[len(deals)] = (side.upper()+'s', sum_amount, sum_cost, sum_fee, aw_price)
         deals.loc[len(deals)] = self.calc_total_results(deals)
 
@@ -222,12 +223,16 @@ class Accounts:
             else: # 'sell'
                 sum_amount = self.round_2(data['amount'].sum() + sum_fee)
                 sum_cost = self.round_2(data['cost'].sum())
-            aw_price = round((sum_cost / sum_amount), 6)
+            aw_price = self.__calc_aw_price(sum_cost, sum_amount) # round((sum_cost / sum_amount), 6)
             deals_fee.loc[len(deals_fee)] = (side.upper()+'s', sum_amount, sum_cost, aw_price)
         deals_fee.loc[len(deals_fee)] = self.calc_total_results(deals_fee)
 
         self.results = dict(deals=deals, deals_fee=deals_fee)
         return self.results
+
+    def __calc_aw_price(self, sum_cost, sum_amount):
+        return round((sum_cost / sum_amount), 6) if sum_amount else 0
+
 
     def calc_total_results(self, deals: pd.DataFrame):
         delta_amount = self.round_2(deals['amount'][0] - deals['amount'][1])
@@ -245,6 +250,7 @@ class Accounts:
         На вход подаю Агрегированнцю таблицу результатов Торговли
         Средняя Цена покупки: {price_delta}' - ????
         """
+        print(self.symbol)
         base_coin, quote_coin = self.symbol.upper().split('/')
         res_amount = deals['amount'][2]
         res_cost = deals['cost'][2]
@@ -324,7 +330,7 @@ if __name__ == '__main__':
     fprint('BUY Orders', orders.query("side == 'buy'"))
 
     # Таблица Сделок
-    trades = accounts.get_trades(symbol=SYMBOL, startTime='2024-03-06', endTime='2024-03-09')
+    trades = accounts.get_trades(symbol=SYMBOL, startTime='2024-03-22', endTime='2024-03-23')
     fprint('TRADES:', trades)
 
     # Результаты Торговли

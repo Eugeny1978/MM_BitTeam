@@ -10,7 +10,7 @@ pd.options.display.max_rows = 30  # Макс Кол-во Отображаемы�
 
 # PARAMS
 SYMBOL = 'DUSD/USDT'
-VOLUME = 44571
+VOLUME = 47_900 # 44571 / (1-0.07) = средневзвешенная цена покупки = 47925.81
 ZERO_PRICE = 1
 MIN_SPRED = 4
 MAX_SPRED = 10
@@ -19,7 +19,7 @@ SIDE_ORDERS = 'buy' # 'sell' 'buy'
 ACCOUNT = 'TEST_Korolev' # 'DUSD_2' #
 DB = DATABASE
 BOT_NAME = 'Slab_Buy'
-PAUSE = 60*3 # minutes
+PAUSE = 60*2 # minutes
 SLAB = True
 
 def main():

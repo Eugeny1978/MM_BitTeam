@@ -10,7 +10,7 @@ pd.options.display.max_rows = 30  # Макс Кол-во Отображаемы�
 
 # PARAMS
 SYMBOL = 'DUSD/USDT'
-VOLUME = 500 # 625
+VOLUME = 750 # 625
 ZERO_PRICE = 1
 MIN_SPRED = 2
 MAX_SPRED = 3
