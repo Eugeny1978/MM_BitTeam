@@ -10,11 +10,11 @@ pd.options.display.max_rows = 30  # Макс Кол-во Отображаемы�
 
 # PARAMS
 SYMBOL = 'DUSD/USDT'
-VOLUME = 360 # 300 # 240
+VOLUME = 1000 # 300 # 240 # 360 !!!
 ZERO_PRICE = 1
-MIN_SPRED = 1 ### 0
-MAX_SPRED = 2 ### 0
-NUM_ORDERS = 20 ### 1
+MIN_SPRED = 0 ### 1
+MAX_SPRED = 0.1 ### 2
+NUM_ORDERS = 1 ### 20
 SIDE_ORDERS = 'sell' # 'sell' 'buy'
 ACCOUNT = 'DUSD_1' # 'DUSD_1' # 'TEST_Luchnik'
 DB = DATABASE

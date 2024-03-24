@@ -1,7 +1,7 @@
 from time import sleep, time
 import pandas as pd
-from random import choice, uniform
-from DataBase.path_to_base import TEST_DB, DATABASE
+from random import choice, uniform, randint
+from DataBase.path_to_base import DATABASE
 from Interface.accounts import Accounts
 from Connector.bot import get_bot_state
 from Connector.logs import jprint, fprint, get_datetime_now, get_time_now
@@ -11,14 +11,14 @@ pd.options.display.width = None  # Отображение Таблицы на в
 pd.options.display.max_columns = 20  # Макс Кол-во Отображаемых Колонок
 pd.options.display.max_rows = 30  # Макс Кол-во Отображаемых Cтрок
 
-DB = TEST_DB
+DB = DATABASE
 SYMBOL = 'DUSD/USDT'
-ACCOUNT =  'TEST_Korolev' # 'DUSD_2' # 'TEST_Korolev'
+ACCOUNT =  'DUSD_2' # 'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
-PAUSE = 100
+PAUSE = 150 # 100
 
-sides = ('buy', 'sell')
-types = ('limit', 'market')
+sides = ('buy', 'buy') # ('buy', 'sell')
+types = ('limit', 'limit') # ('limit', 'market')
 
 def main():
 
@@ -32,6 +32,8 @@ def main():
         # Подключение к Аккаунту
         accounts.set_trade_account(ACCOUNT)
         connect = accounts.exchange
+        amount_step = connect.markets[SYMBOL]['amountStep']
+        price_step = connect.markets[SYMBOL]['priceStep']
         message = f"Бот '{BOT_NAME}' | Режим RUN Запущен | {get_datetime_now()}"
     else:
         message = f"Бот {BOT_NAME} НЕ запущен. Измените Состояние STATE на значение 'Run' | {get_datetime_now()}"
@@ -40,20 +42,21 @@ def main():
     # Основная ПЕТЛЯ
     while get_bot_state(DB, BOT_NAME) == 'Run':
 
+        loop_pause = randint(PAUSE, 2*PAUSE) # варьирую время
         start_time = time()
         try:
-            connect.cancel_all_orders() # удаляю существующие лимитки
-        except Exception as error:
-            print(error)
+            connect.cancel_all_orders(SYMBOL) # удаляю существующие лимитки
+        except:
             print(error_message)
         # Задаю Параметры Ордера
-        order_price = round(uniform(0.95, 1.05), 6) # Интервал Цена Ордера
-        order_amount = round(uniform(5, 12000), 6) # Интервал Размер Ордера
+        order_amount = round(uniform(5, 12), amount_step) # Интервал Размер Ордера
+        order_price = round(uniform(1, 1), price_step)  # Интервал Цена Ордера
         order_side = choice(sides)
         order_type = choice(types)
+        # print(f'Параметры для Ордера: {SYMBOL} | {order_side} | {order_type} | {order_amount = } | {order_price = }')
 
         # Выставляю Ордер
-        if order_type == types[0]: # limit
+        if order_type == 'limit': # types[0]: # limit
             try:
                 connect.create_order(symbol=SYMBOL, side=order_side, type=order_type, amount=order_amount, price=order_price)
                 print(f"Создан Ордер: {SYMBOL} | {order_side} | {order_type} | {order_amount = } | {order_price = }")
@@ -69,8 +72,8 @@ def main():
         end_time = time()
 
         print(f"{BOT_NAME} | Процесс Выполнен за {round(end_time - start_time, 3)} сек")
-        print(f'Выполняется Пауза {PAUSE} сек. | {get_datetime_now()}')
-        sleep(PAUSE)
+        print(f'Выполняется Пауза {loop_pause} сек. | {get_datetime_now()}')
+        sleep(loop_pause)
         fprint(f'Пауза Завершена. | {get_datetime_now()}')
 
     match get_bot_state(DB, BOT_NAME), process:

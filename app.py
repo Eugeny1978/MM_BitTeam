@@ -45,11 +45,13 @@ with tabs[1]:
     # Таблица Ордеров. Отдельно SELL отдельно BUY
     orders = accounts.get_open_orders()
     with colSell:
-        st.markdown(':red[SELL Orders:]')
-        st.dataframe(orders.query("side == 'sell'").reset_index(drop=True).style.pipe(make_style_df), use_container_width=True) # height=300
+        sell_orders = orders.query("side == 'sell'").reset_index(drop=True)
+        st.markdown(f':red[SELL Orders: | numbers: {len(sell_orders)}]')
+        st.dataframe(sell_orders.style.pipe(make_style_df), use_container_width=True) # height=300
     with colBuy:
-        st.markdown(':green[BUY Orders:]')
-        st.dataframe(orders.query("side == 'buy'").reset_index(drop=True).style.pipe(make_style_df), use_container_width=True)
+        buy_orders = orders.query("side == 'buy'").reset_index(drop=True)
+        st.markdown(f':green[BUY Orders: | numbers: {len(buy_orders)}]')
+        st.dataframe(buy_orders.style.pipe(make_style_df), use_container_width=True)
 
 with tabs[2]:
     with st.form('Trade FORM', clear_on_submit=False, border=False):

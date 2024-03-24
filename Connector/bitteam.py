@@ -95,8 +95,9 @@ class BitTeam(): # Request
                 #     return self.data
                 return self.data
             case _:
+                message = f"Запрос НЕ Прошел! | Код: {self.status} | {self.data}"
                 print(f'Статус-Код: {self.status} | {self.data}')
-                raise('Запрос НЕ Прошел!')
+                raise(message)
 
     def load_markets(self):
         """
@@ -109,8 +110,9 @@ class BitTeam(): # Request
         for symbol in self.data['result']['pairs']:
             markets[self.format_pair(symbol['name'])] = {
                 'id': symbol['id'],
-                'baseStep': symbol['baseStep'],
-                'quoteStep': symbol['quoteStep'],
+                # 'baseStep': symbol['baseStep'], #
+                # 'quoteStep': symbol['quoteStep'], #
+                'amountStep': symbol['settings']['lot_size_view_min'],
                 'priceStep': symbol['settings']['price_view_min'],
                 'limit_usd': float(symbol['settings']['limit_usd'])
                 }
@@ -262,12 +264,12 @@ class BitTeam(): # Request
         else:
             pairId = 0
         body = {"pairId": pairId}
-        self.__request(path='/ccxt/cancel-all-order', method='post', data=body)
+        # self.__request(path='/ccxt/cancel-all-order', method='post', data=body)
         if pairId:
-            print(f'BitTeam. Удалены Все Ордера по Символу: {symbol}')
+            print(f'BitTeam. Отправлен Запрос на Удаление Всех Ордеров по Символу: {symbol}')
         else:
-            print(f'BitTeam. Удалены ВСЕ Ордера')
-        return self.data
+            print(f'BitTeam. Отправлен Запрос на Удаление Всех Ордеров')
+        return self.__request(path='/ccxt/cancel-all-order', method='post', data=body) # self.data
 
     def fetch_order(self, order_id: (int or str)):
         """
@@ -310,8 +312,8 @@ class BitTeam(): # Request
         if len(order):
             order_payloads = self.__form_order_by(order)
             payloads = payloads | order_payloads
-        self.__request(path=f'/ccxt/ordersOfUser', params=payloads)
-        return self.data
+        return self.__request(path=f'/ccxt/ordersOfUser', params=payloads)
+        # return self.data
 
     def fetch_orders_test(self, symbol='', limit=10_000, type:UserOrderTypes='active', offset=0, order={}, where={}): # протестить
         """
@@ -330,8 +332,8 @@ class BitTeam(): # Request
             # payloads['where[pairId]'] = self.__get_pairId_markets(where) # альтернативный фильтр по Символу
             where_payloads = self.__form_filter_where(where, symbol)
             payloads = payloads | where_payloads
-        self.__request(path=f'/ccxt/ordersOfUser', params=payloads)
-        return self.data
+        return self.__request(path=f'/ccxt/ordersOfUser', params=payloads)
+        # return self.data
 
     def __form_filter_where(self, where: dict, symbol: str) -> dict:
         valid_keys = ['price', 'side', 'type', 'amount', 'quantity']
@@ -501,7 +503,7 @@ if __name__ == '__main__':
     MODE_TEST = 'Test_Spot'
 
     # # Инициализация
-    # connect = BitTeam()
+    connect = BitTeam()
     # connect = BitTeam(mode=MODE)
     # connect = BitTeam(mode=MODE_TEST)
     # print(connect)
@@ -528,7 +530,7 @@ if __name__ == '__main__':
     # jprint(connect.fetch_ticker(SYMBOL))
 
     # # tickers / coins
-    # jprint(connect.info_tickers())
+    jprint(connect.info_tickers())
     # jprint(connect.info_tickers_cmc())
     # jprint(connect.info_tickers_brief_cmc())
     # jprint(connect.info_coins())
@@ -537,16 +539,16 @@ if __name__ == '__main__':
 
     # # Данные по Аккаунту из Базы Данных
     # acc_keys, acc_mode = get_data_from_db(acc_name, DB)
-    acc_keys, acc_mode = get_data_from_db(acc_name_test, DB)
+    # acc_keys, acc_mode = get_data_from_db(acc_name_test, DB)
     # mprint(acc_keys, acc_mode)
 
     # # Варианты Авторизации
     # # Авторизация Сразу при Инициализации:
     # connect = BitTeam(acc_keys, acc_mode)
     # # Если ранее соединение было и теперь необходимо только авторизация
-    connect = BitTeam(mode=acc_mode) # Spot режим - по умолчанию
-    connect.account = acc_keys
-    print(connect)
+    # connect = BitTeam(mode=acc_mode) # Spot режим - по умолчанию
+    # connect.account = acc_keys
+    # print(connect)
 
     # Если Работаем на Тестовом Сервере (Включаем - Тестовый Режим - Меняется отсновной URL)
     # Для Реальной Торговли не обязательно. Тк по умолчанию запросы уходят туда.

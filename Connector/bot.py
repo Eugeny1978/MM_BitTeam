@@ -59,12 +59,13 @@ class Bot:
         return round(price, self.steps['priceStep'])
 
     def round_amount(self, volume):
-        return round(volume, self.steps['baseStep'])
+        return round(volume, self.steps['amountStep'])
 
     def get_random_amount(self):
         if self.slab:
             return self.amounts
-        return self.round_amount(uniform(0.8, 1.2) * self.amounts)
+        # return self.round_amount(uniform(0.8, 1.2) * self.amounts)
+        return round(uniform(0.8, 1.2) * self.amounts, 6)
 
     def get_data_from_db(self):
         """

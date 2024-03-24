@@ -83,7 +83,7 @@ with colC:
 with colD:
     # Поле выбора Аккаунта
     accounts = Accounts(DB)
-    account = st.selectbox('Account:', index=5, options=accounts.acc_names, placeholder="Choose an account name", key='account')  # 5 -> 'TEST_Lychnik'
+    account = st.selectbox('Account:', index=0, options=accounts.acc_names, placeholder="Choose an account name", key='account')  # 0 -> 'DUSD_1' | 5 -> 'TEST_Lychnik'
     st.markdown('Перед Нажатием Остановите Всех Ботов!')
     del_all_orders = st.button('Quickly DELETE all Orders', use_container_width=True)
     if del_all_orders:
