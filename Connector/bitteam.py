@@ -46,14 +46,6 @@ class BitTeam(): # Request
         self.base_url = base_url
         self.load_markets()
 
-    # def set_test_mode(self, mode: bool):
-    #     if not mode:
-    #         self.base_url = 'https://bit.team/trade/api'
-    #     else:
-    #         # self.base_url = 'https://dkr3.bit.team/trade/api'
-    #         self.base_url = 'https://dkr.bit.team/trade/api'
-    #     self.load_markets()
-
     @staticmethod
     def format_symbol(symbol: str) -> str:
         """
@@ -113,16 +105,18 @@ class BitTeam(): # Request
         шаг = 0.002
         шаг = 0.0005
         шаг = 2
+        по результиатам тестов пришел к выводу что скорее всего точность получаем беря по паре символов и берем меньшую:
+        см. реализацию в коде
         """
         self.info_tickers()
         markets = {}
         for symbol in self.data['result']['pairs']:
             markets[self.format_pair(symbol['name'])] = {
                 'id': symbol['id'],
-                # 'baseStep': symbol['baseStep'], #
-                # 'quoteStep': symbol['quoteStep'], #
-                'amountStep': symbol['settings']['lot_size_view_min'],
-                'priceStep': symbol['settings']['price_view_min'],
+                # 'baseStep': symbol['baseStep'], # шаг объема
+                # 'quoteStep': symbol['quoteStep'], # шаг цены
+                'amountStep': min(symbol['settings']['lot_size_view_min'], symbol['baseStep']),
+                'priceStep': min(symbol['settings']['price_view_min'], symbol['quoteStep']),
                 'limit_usd': float(symbol['settings']['limit_usd'])
                 }
         self.markets = markets
@@ -247,11 +241,18 @@ class BitTeam(): # Request
         body = {'pairId': pairId,
                 'side': side,
                 'type': type,
-                'amount': str(amount) # округлить до 6 знаков str(round(amount, 6))?
+                'amount': str(self.round_amount(symbol, amount)) # округлить
                 }
         if type == 'limit':
-            body['price'] = str(price) # округлить до 6 знаков str(round(price, 6))?
+            body['price'] = str(self.round_price(symbol, price)) # округлить
         return self.__request(path='/ccxt/ordercreate', method='post', data=body)
+
+    def round_amount(self, symbol, amount):
+        return round(amount, self.markets[symbol]['amountStep'])
+
+    def round_price(self, symbol, price):
+        return round(price, self.markets[symbol]['priceStep'])
+
 
     def cancel_order(self, id: (int, str)):
         """
