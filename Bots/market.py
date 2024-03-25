@@ -49,11 +49,11 @@ def main():
         except:
             print(error_message)
         # Задаю Параметры Ордера
-        order_amount = round(uniform(5, 30), amount_step) # Интервал Размер Ордера
-        order_price = round(uniform(0.99, 1.01), price_step)  # Интервал Цена Ордера
+        order_amount = round(uniform(10, 45), amount_step) # Интервал Размер Ордера
+        order_price = round(uniform(0.987, 1.03), price_step)  # Интервал Цена Ордера
         order_side = choice(sides)
         order_type = choice(types)
-        print(f'Параметры для Ордера: {SYMBOL} | {order_side} | {order_type} | {order_amount = } | {order_price = }')
+        # print(f'Параметры для Ордера: {SYMBOL} | {order_side} | {order_type} | {order_amount = } | {order_price = }')
 
         # Выставляю Ордер
         if order_type == 'limit': # types[0]: # limit

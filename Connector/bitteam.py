@@ -203,6 +203,15 @@ class BitTeam(): # Request
         """
         return self.__request(path=f'/cmc/assets')
 
+    def info_currencies(self):
+        """
+        Общая Информация о Криптовалютах (Coin-ах), доступных на бирже
+        Заявлены параметры (params): limit, offset, order, where - но они не работают
+        """
+        return self.__request(path='/currencies')
+
+
+
 
 # --- ПРИВАТНЫЕ ЗАПРОСЫ. Требуется Предварительная Авторизация -----------------------------
 
@@ -241,10 +250,10 @@ class BitTeam(): # Request
         body = {'pairId': pairId,
                 'side': side,
                 'type': type,
-                'amount': str(self.round_amount(symbol, amount)) # округлить
+                'amount': str(self.round_amount(symbol, amount)) # округлил
                 }
         if type == 'limit':
-            body['price'] = str(self.round_price(symbol, price)) # округлить
+            body['price'] = str(self.round_price(symbol, price)) # округлил
         return self.__request(path='/ccxt/ordercreate', method='post', data=body)
 
     def round_amount(self, symbol, amount):
@@ -540,10 +549,11 @@ if __name__ == '__main__':
     # jprint(connect.fetch_ticker(SYMBOL))
 
     # # tickers / coins
-    jprint(connect.info_tickers())
+    # jprint(connect.info_tickers())
     # jprint(connect.info_tickers_cmc())
     # jprint(connect.info_tickers_brief_cmc())
     # jprint(connect.info_coins())
+    jprint((connect.info_currencies()))
 
     # # ПРИВАТНЫЕ ЗАПРОСЫ ------------------
 
