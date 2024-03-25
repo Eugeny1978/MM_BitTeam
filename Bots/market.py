@@ -15,10 +15,10 @@ DB = DATABASE
 SYMBOL = 'DUSD/USDT'
 ACCOUNT =  'DUSD_2' # 'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
-PAUSE = 150 # 100
+PAUSE = 60 # 100
 
-sides = ('buy', 'buy') # ('buy', 'sell')
-types = ('limit', 'limit') # ('limit', 'market')
+sides = ('buy', 'sell') # ('buy', 'buy') # ('buy', 'sell')
+types = ('limit', 'market') # ('limit', 'limit') # ('limit', 'market')
 
 def main():
 
@@ -49,11 +49,11 @@ def main():
         except:
             print(error_message)
         # Задаю Параметры Ордера
-        order_amount = round(uniform(5, 12), amount_step) # Интервал Размер Ордера
-        order_price = round(uniform(1, 1), price_step)  # Интервал Цена Ордера
+        order_amount = round(uniform(5, 30), amount_step) # Интервал Размер Ордера
+        order_price = round(uniform(0.99, 1.01), price_step)  # Интервал Цена Ордера
         order_side = choice(sides)
         order_type = choice(types)
-        # print(f'Параметры для Ордера: {SYMBOL} | {order_side} | {order_type} | {order_amount = } | {order_price = }')
+        print(f'Параметры для Ордера: {SYMBOL} | {order_side} | {order_type} | {order_amount = } | {order_price = }')
 
         # Выставляю Ордер
         if order_type == 'limit': # types[0]: # limit
