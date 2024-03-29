@@ -17,7 +17,7 @@ ACCOUNT =  'DUSD_2' # 'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
 PAUSE = 60 # 100
 
-sides = ('buy', 'sell') # ('buy', 'buy') # ('buy', 'sell')
+sides = ('sell', 'buy') # ('buy', 'buy') # ('buy', 'sell')
 types = ('limit', 'market') # ('limit', 'limit') # ('limit', 'market')
 
 def main():
@@ -49,7 +49,7 @@ def main():
         except:
             print(error_message)
         # Задаю Параметры Ордера
-        order_amount = round(uniform(10, 45), amount_step) # Интервал Размер Ордера
+        order_amount = round(uniform(10, 50), amount_step) # Интервал Размер Ордера
         order_price = round(uniform(0.987, 1.03), price_step)  # Интервал Цена Ордера
         order_side = choice(sides)
         order_type = choice(types)

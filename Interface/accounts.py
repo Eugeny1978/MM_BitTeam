@@ -227,11 +227,11 @@ class Accounts:
             data = self.trades.query(f"side == '{side}'").copy().reset_index(drop=True)[list(RESULTS_COLUMNS)]
             sum_fee = self.round_2(data['fee'].sum())
             if side == 'buy':
-                sum_amount = self.round_2(data['amount'].sum())
-                sum_cost = self.round_2(data['cost'].sum() + sum_fee)
+                sum_amount = self.round_2(data['amount'].sum() - sum_fee)
+                sum_cost = self.round_2(data['cost'].sum()) #  + sum_fee
             else: # 'sell'
-                sum_amount = self.round_2(data['amount'].sum() + sum_fee)
-                sum_cost = self.round_2(data['cost'].sum())
+                sum_amount = self.round_2(data['amount'].sum()) #  + sum_fee
+                sum_cost = self.round_2(data['cost'].sum() - sum_fee)
             aw_price = self.__calc_aw_price(sum_cost, sum_amount) # round((sum_cost / sum_amount), 6)
             deals_fee.loc[len(deals_fee)] = (side.upper()+'s', sum_amount, sum_cost, aw_price)
         deals_fee.loc[len(deals_fee)] = self.calc_total_results(deals_fee)
@@ -297,6 +297,9 @@ class Accounts:
                     start_date,
                     end_date
                   ))
+
+    def get_total_results(self, acount_names: list[str]):
+        pass
 
 
 if __name__ == '__main__':

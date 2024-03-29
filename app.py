@@ -87,3 +87,4 @@ with tabs[3]: # Результат Торговли
         st.dataframe(deals_fee.style.pipe(make_style_df), use_container_width=True)
         st.markdown(accounts.get_conclusion(deals_fee))
     record_db = st.button('Record Results in DataBase', args=(start_date, end_date), use_container_width=False, on_click=accounts.record_bd_results) #
+
