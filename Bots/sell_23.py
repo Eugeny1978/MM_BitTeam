@@ -19,7 +19,7 @@ SIDE_ORDERS = 'sell' # 'sell' 'buy'
 ACCOUNT = 'DUSD_1' # 'DUSD_1' # 'TEST_Luchnik'
 DB = DATABASE
 BOT_NAME = 'Sell_23'
-PAUSE = 60
+PAUSE = 90
 
 def main():
 

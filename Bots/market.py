@@ -15,7 +15,7 @@ DB = DATABASE
 SYMBOL = 'DUSD/USDT'
 ACCOUNT =  'DUSD_2' # 'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
-PAUSE = 60 # 100
+PAUSE = 70 # 100
 
 sides = ('sell', 'buy') # ('buy', 'buy') # ('buy', 'sell')
 types = ('limit', 'market') # ('limit', 'limit') # ('limit', 'market')

@@ -72,9 +72,9 @@ class BitTeam(): # Request
         url = (self.base_url + path)
         match method:
             case 'get':
-                response = requests.get(url, auth=self.auth, params=params, data=data)
+                response = requests.get(url, auth=self.auth, params=params, data=data, timeout=(10, 300)) # timeout=300 - секунд
             case 'post':
-                response = requests.post(url, auth=self.auth, params=params, data=data)
+                response = requests.post(url, auth=self.auth, params=params, data=data, timeout=(10, 300)) # timeout=(5, 60) - соединение, чтение
             case _:
                 response = {}
         self.status = response.status_code
