@@ -298,9 +298,6 @@ class Accounts:
                     end_date
                   ))
 
-    def get_total_results(self, acount_names: list[str]):
-        pass
-
 
 if __name__ == '__main__':
 
