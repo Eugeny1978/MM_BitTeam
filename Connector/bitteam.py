@@ -68,13 +68,23 @@ class BitTeam(): # Request
         :params: payloads = {} Параметры (дополняют url ? &)
         :data: body = {} Тело Запроса
         :return: Возвращает Данные Запроса
+        import requests
+        ТАЙМАУТ: ----------------------------------------------------------
+        import requests
+        from requests.exceptions import Timeout
+        try:
+            response = requests.get('https://api.github.com', timeout=1)
+        except Timeout:
+            print('The request timed out')
+        else:
+            print('The request did not time out')
         """
         url = (self.base_url + path)
         match method:
             case 'get':
                 response = requests.get(url, auth=self.auth, params=params, data=data, timeout=(10, 300)) # timeout=300 - секунд
             case 'post':
-                response = requests.post(url, auth=self.auth, params=params, data=data, timeout=(10, 300)) # timeout=(5, 60) - соединение, чтение
+                response = requests.post(url, auth=self.auth, params=params, data=data, timeout=(2, 5)) # timeout=(5, 60) - соединение, чтение
             case _:
                 response = {}
         self.status = response.status_code
