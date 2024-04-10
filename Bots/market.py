@@ -17,7 +17,7 @@ ACCOUNT =  'DUSD_2' # 'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
 PAUSE = 70 # 100
 
-def get_trade_sides(buys=1, sells=1):
+def get_trade_sides(buys=4, sells=3):
     sides = []  # ('buy', 'buy') # ('buy', 'sell')
     for _ in range(sells):
         sides.append(('sell'))
@@ -28,7 +28,7 @@ def get_trade_sides(buys=1, sells=1):
 
 def main():
     types = ('limit', 'market')  # ('limit', 'limit') # ('limit', 'market')
-    sides = get_trade_sides(buys=5, sells=6)
+    sides = get_trade_sides(buys=5, sells=8)
 
     process = False
     error_message = 'Проверь Подключение к бирже.'

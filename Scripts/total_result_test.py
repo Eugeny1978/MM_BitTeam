@@ -50,7 +50,7 @@ def calc_total_results(database, account_name, symbol, trade_start, trade_end, s
     # fprint('Temp Balance:', balance)
     # fprint('Trades:', trades)
     # fprint('Deals:', results)
-    fprint(f'{account_name}:', total)
+    # fprint(f'{account_name}:', total)
     return total
 
 
