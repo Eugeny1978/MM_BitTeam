@@ -17,7 +17,7 @@ ACCOUNT =  'DUSD_2' # 'DUSD_2' # 'TEST_Korolev'
 BOT_NAME = 'Market'
 PAUSE = 70 # 100
 
-def get_trade_sides(buys=4, sells=3):
+def get_trade_sides(buys=2, sells=1):
     sides = []  # ('buy', 'buy') # ('buy', 'sell')
     for _ in range(sells):
         sides.append(('sell'))

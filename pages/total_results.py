@@ -20,7 +20,7 @@ START_BALANCE_2 = dict(base_coin=38_900, quote_coin=44_571.27)
 # ЛОГИКА СТРАНИЦЫ
 
 st.set_page_config(layout="wide") # Вся страница вместо узкой центральной колонки
-st.header('Итоговые Результаты по счетам ', anchor=False, divider='red')
+st.header(f'Итоговые Результаты по счетам | {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}', anchor=False, divider='red')
 
 total_1 = calc_total_results(DB, ACC_1, SYMBOL, START, END, START_BALANCE_1)
 total_2 = calc_total_results(DB, ACC_2, SYMBOL, START, END, START_BALANCE_2)
